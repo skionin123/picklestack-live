@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <style>
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       min-height: 100%;
@@ -13,30 +12,11 @@
       color: white;
       font-family: Arial, Helvetica, sans-serif;
     }
-
-    body { padding: 14px; }
-
-    .app {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(34px, 7vw, 70px);
-      font-weight: 900;
-    }
-
+    body { padding-bottom: 82px; }
+    .app { padding: 14px; max-width: 1400px; margin: auto; }
+    h1 { font-size: clamp(34px, 7vw, 70px); margin: 0; font-weight: 900; }
+    h2 { margin-top: 0; }
     p { color: #94a3b8; }
-
     .card {
       background: #0f172a;
       border: 1px solid #334155;
@@ -44,36 +24,101 @@
       padding: 18px;
       margin-bottom: 16px;
     }
-
     button, .photo-btn {
       border: none;
       border-radius: 12px;
-      padding: 14px 18px;
+      padding: 13px 16px;
       background: #2563eb;
       color: white;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 900;
       cursor: pointer;
+      text-align: center;
     }
-
-    .danger { background: #991b1b; }
     .green { background: #16a34a; }
-    .yellow { background: #facc15; color: #000; }
-
-    input {
+    .yellow { background: #facc15; color: black; }
+    .danger { background: #991b1b; }
+    input, select {
+      width: 100%;
       border: 1px solid #475569;
       border-radius: 12px;
       padding: 14px;
       background: #020617;
       color: white;
       font-size: 18px;
-      width: 100%;
     }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .two-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hidden { display: none; }
 
-    .add-grid {
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(5, 1fr);
+      background: #020617;
+      border-top: 1px solid #334155;
+      z-index: 50;
+    }
+    .bottom-nav button {
+      border-radius: 0;
+      background: #020617;
+      border-right: 1px solid #1e293b;
+      font-size: 13px;
+      padding: 12px 4px;
+    }
+    .bottom-nav button.active { background: #2563eb; }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr .9fr;
+      gap: 12px;
+      background: #050505;
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 60vh;
+    }
+    .score-column, .serve-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+    }
+    .team-name, .game-label {
+      background: transparent;
+      border: none;
+      color: white;
+      text-align: center;
+      font-size: clamp(36px, 5vw, 80px);
+      font-weight: 900;
+    }
+    .active-server { color: #38bdf8; }
+    .score-number {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: clamp(150px, 23vw, 420px);
+      font-weight: 900;
+      line-height: .9;
+    }
+    .server-circle {
+      width: clamp(160px, 20vw, 320px);
+      height: clamp(160px, 20vw, 320px);
+      border-radius: 50%;
+      background: #ffe600;
+      color: black;
+      font-size: clamp(110px, 15vw, 240px);
+      font-weight: 900;
+    }
+    .small-label { color: #94a3b8; font-weight: 900; }
+    .controls {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
     }
 
     .photo-preview {
@@ -85,171 +130,163 @@
       background-position: center;
       border: 3px solid #38bdf8;
     }
-
-    .hidden { display: none; }
-
     #cameraVideo {
       width: 100%;
       max-height: 420px;
       border-radius: 18px;
-      background: #000;
+      background: black;
     }
 
-    .camera-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 16px;
-    }
-
-    .court-list {
-      display: grid;
-      gap: 16px;
-    }
-
+    .court-list, .queue-list, .winner-list { display: grid; gap: 12px; }
     .court-header {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       margin-bottom: 12px;
     }
-
-    .timer {
-      font-size: 22px;
-      font-weight: 900;
-      color: #38bdf8;
-    }
-
+    .timer { color: #38bdf8; font-size: 24px; font-weight: 900; }
     .court-grid {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      gap: 16px;
+      gap: 12px;
       align-items: center;
     }
-
     .vs {
-      font-size: clamp(34px, 6vw, 80px);
-      font-weight: 900;
       color: #facc15;
+      font-size: clamp(34px, 6vw, 74px);
+      font-weight: 900;
       text-align: center;
     }
-
     .player-slots {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      min-height: 190px;
+      gap: 10px;
     }
-
     .player-card {
       background: #020617;
       border: 1px solid #475569;
       border-radius: 18px;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
     }
-
+    .player-photo, .queue-photo {
+      background: #1e293b;
+      background-size: cover;
+      background-position: center;
+    }
     .player-photo {
       width: 100%;
       aspect-ratio: 1 / 1;
       border-radius: 16px;
-      background: #1e293b;
-      background-size: cover;
-      background-position: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
-
-    .player-name {
-      font-size: clamp(18px, 3vw, 28px);
+    .queue-photo {
+      width: 66px;
+      height: 66px;
+      border-radius: 14px;
+    }
+    .player-name, .queue-name {
       font-weight: 900;
+      font-size: 20px;
       word-break: break-word;
     }
-
-    .court-actions {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-
-    .queue-list {
-      display: grid;
-      gap: 10px;
-    }
-
     .queue-item {
       display: grid;
-      grid-template-columns: 70px 1fr auto;
-      gap: 12px;
+      grid-template-columns: 66px 1fr auto;
+      gap: 10px;
       align-items: center;
       background: #020617;
       border: 1px solid #334155;
       border-radius: 16px;
       padding: 10px;
     }
-
-    .queue-photo {
-      width: 70px;
-      height: 70px;
-      border-radius: 14px;
-      background: #1e293b;
-      background-size: cover;
-      background-position: center;
+    .mini-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+    .mini-buttons button { padding: 8px 10px; font-size: 13px; }
+    .court-actions {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
     }
 
-    .queue-name {
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .queue-buttons {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .queue-buttons button {
-      padding: 8px 10px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .header { flex-direction: column; align-items: stretch; }
-      .add-grid, .layout, .court-grid { grid-template-columns: 1fr; }
-      .camera-actions { flex-direction: column; }
-      .court-actions { grid-template-columns: 1fr; }
+    @media (max-width: 800px) {
+      .grid, .two-grid, .court-grid, .scoreboard { grid-template-columns: 1fr; }
+      .controls, .court-actions { grid-template-columns: 1fr 1fr; }
       .queue-item { grid-template-columns: 60px 1fr; }
-      .queue-buttons { grid-column: 1 / -1; }
+      .mini-buttons { grid-column: 1 / -1; }
+      .score-number { font-size: clamp(130px, 42vw, 260px); }
+      .server-circle { width: 170px; height: 170px; font-size: 125px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <header class="header">
-      <div>
-        <h1>🏓 PickleStack Live</h1>
-        <p>Digital pickleball stack with photos, courts, timers, and rotation tools.</p>
+<div class="app">
+  <section id="tabScore">
+    <h1>🏓 PickleStack Live</h1>
+    <p>Scoreboard, stack rotation, courts, photos, and timers.</p>
+
+    <main class="scoreboard">
+      <section class="score-column">
+        <input id="leftName" class="team-name active-server" value="Team A">
+        <button id="leftScore" class="score-number" onclick="addPointServing()">0</button>
+        <div class="small-label">Serving Team</div>
+      </section>
+
+      <section class="score-column">
+        <input id="rightName" class="team-name" value="Team B">
+        <button id="rightScore" class="score-number" onclick="addPointReceiving()">0</button>
+        <div class="small-label">Receiving Team</div>
+      </section>
+
+      <section class="serve-column">
+        <input id="gameInput" class="game-label" value="Game 1">
+        <button id="serverNumber" class="server-circle" onclick="secondServe()">2</button>
+        <div class="small-label">Serve</div>
+      </section>
+    </main>
+
+    <section class="controls">
+      <button onclick="addPointServing()">Point</button>
+      <button onclick="secondServe()">2nd Serve</button>
+      <button onclick="sideOut()">Side Out</button>
+      <button onclick="undoScore()">Undo</button>
+      <button class="danger" onclick="resetScore()">Reset</button>
+      <button onclick="goFullscreen()">Fullscreen</button>
+    </section>
+  </section>
+
+  <section id="tabCourts" class="hidden">
+    <div class="card">
+      <h1>Courts</h1>
+      <p>Use 1 court or unlimited courts. Winner vs Winner only appears when you have 2+ courts.</p>
+      <div class="grid">
+        <button class="green" onclick="addCourt()">+ Add Court</button>
+        <button class="yellow" onclick="shuffleQueue()">Shuffle Queue</button>
+        <button onclick="loadAllEmptyCourts()">Load Empty Courts</button>
+        <button class="danger" onclick="resetAll()">Reset All</button>
       </div>
-      <button class="danger" onclick="resetAll()">Reset All</button>
-    </header>
+    </div>
 
+    <div id="winnerQueueCard" class="card hidden">
+      <h2>Winner Queue</h2>
+      <p>Winner teams wait here for Winner vs Winner mode.</p>
+      <div id="winnerQueue" class="winner-list"></div>
+    </div>
+
+    <div id="courtList" class="court-list"></div>
+  </section>
+
+  <section id="tabStack" class="hidden">
     <section class="card">
-      <h2>Add Player</h2>
-      <div class="add-grid">
-        <input id="playerNameInput" type="text" placeholder="Player name">
-
+      <h1>Add Player</h1>
+      <div class="grid">
+        <input id="playerNameInput" placeholder="Player name">
         <label class="photo-btn">
           Upload Photo
           <input id="photoInput" type="file" accept="image/*" hidden>
         </label>
-
         <button onclick="openCamera()">Take Picture</button>
         <button class="green" onclick="addPlayer()">Join Stack</button>
       </div>
@@ -259,7 +296,7 @@
     <section id="cameraPanel" class="card hidden">
       <h2>Take Player Picture</h2>
       <video id="cameraVideo" autoplay playsinline></video>
-      <div class="camera-actions">
+      <div class="grid" style="margin-top:10px;">
         <button class="green" onclick="capturePhoto()">Use Photo</button>
         <button onclick="flipCamera()">Flip Camera</button>
         <button class="danger" onclick="closeCamera()">Close</button>
@@ -268,52 +305,64 @@
     </section>
 
     <section class="card">
-      <h2>Courts</h2>
-      <button class="green" onclick="addCourt()">+ Add Court</button>
-      <div id="courtList" class="court-list" style="margin-top:16px;"></div>
+      <h2>Waiting Stack</h2>
+      <p>Next players are at the top.</p>
+      <div id="queueList" class="queue-list"></div>
     </section>
+  </section>
 
-    <main class="layout">
-      <section class="card">
-        <h2>Waiting Stack</h2>
-        <p>Next players are at the top.</p>
-        <button class="yellow" onclick="shuffleQueue()">Shuffle Queue</button>
-        <div id="queueList" class="queue-list" style="margin-top:14px;"></div>
-      </section>
+  <section id="tabJoin" class="hidden">
+    <section class="card">
+      <h1>Player Join</h1>
+      <p>For now, share this page link. Next version will add real QR + Firebase live sync.</p>
+      <button onclick="copyLink()">Copy App Link</button>
+    </section>
+  </section>
 
-      <section class="card">
-        <h2>QR Join</h2>
-        <p>For now, share this page link with players. Later we will connect Firebase so every phone updates live.</p>
-        <button onclick="copyLink()">Copy App Link</button>
-      </section>
-    </main>
-  </div>
+  <section id="tabSettings" class="hidden">
+    <section class="card">
+      <h1>Settings</h1>
+      <label>Rotation Style</label>
+      <select id="rotationRule" onchange="saveSettings()">
+        <option value="king">1 Court: King of Court</option>
+        <option value="split">1 Court: Winners Split</option>
+        <option value="all">All 4 Rotate</option>
+        <option value="winnerVsWinner">2+ Courts: Winner vs Winner</option>
+      </select>
+      <p id="ruleDescription"></p>
+    </section>
+  </section>
+</div>
+
+<nav class="bottom-nav">
+  <button id="navScore" class="active" onclick="showTab('Score')">Score</button>
+  <button id="navCourts" onclick="showTab('Courts')">Courts</button>
+  <button id="navStack" onclick="showTab('Stack')">Stack</button>
+  <button id="navJoin" onclick="showTab('Join')">Join</button>
+  <button id="navSettings" onclick="showTab('Settings')">Settings</button>
+</nav>
 
 <script>
 let players = [];
 let courts = [];
+let winnerTeams = [];
 let selectedPhotoData = "";
 let cameraStream = null;
 let cameraFacing = "user";
 
-const playerNameInput = document.getElementById("playerNameInput");
-const photoInput = document.getElementById("photoInput");
-const photoPreview = document.getElementById("photoPreview");
-const cameraPanel = document.getElementById("cameraPanel");
-const cameraVideo = document.getElementById("cameraVideo");
-const cameraCanvas = document.getElementById("cameraCanvas");
-const queueList = document.getElementById("queueList");
-const courtList = document.getElementById("courtList");
+let teamA = { name: "Team A", score: 0 };
+let teamB = { name: "Team B", score: 0 };
+let servingTeam = "A";
+let serverNumberValue = 2;
+let scoreHistory = [];
+
+const tabs = ["Score", "Courts", "Stack", "Join", "Settings"];
 
 loadState();
-
-if (!courts.length) {
-  courts.push(makeCourt("Court 1"));
-  saveState();
-}
+if (!courts.length) courts.push(makeCourt("Court 1"));
+renderAll();
 
 setInterval(renderCourts, 1000);
-renderAll();
 
 photoInput.addEventListener("change", async event => {
   const file = event.target.files[0];
@@ -322,138 +371,46 @@ photoInput.addEventListener("change", async event => {
   showPhotoPreview(selectedPhotoData);
 });
 
+function showTab(name) {
+  tabs.forEach(t => {
+    document.getElementById("tab" + t).classList.toggle("hidden", t !== name);
+    document.getElementById("nav" + t).classList.toggle("active", t === name);
+  });
+}
+
 function makeId() {
   if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
   return String(Date.now()) + Math.random().toString(16).slice(2);
 }
 
 function makeCourt(name) {
-  return {
-    id: makeId(),
-    name,
-    teamOne: [],
-    teamTwo: [],
-    startedAt: null
-  };
+  return { id: makeId(), name, teamOne: [], teamTwo: [], startedAt: null };
 }
 
-function resizeImage(file, maxSize) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = event => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height && width > maxSize) {
-          height = Math.round((height * maxSize) / width);
-          width = maxSize;
-        } else if (height > maxSize) {
-          width = Math.round((width * maxSize) / height);
-          height = maxSize;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.8));
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
+function addCourt() {
+  courts.push(makeCourt("Court " + (courts.length + 1)));
+  saveState();
+  renderAll();
 }
 
-function showPhotoPreview(photo) {
-  if (!photo) {
-    photoPreview.classList.add("hidden");
-    photoPreview.style.backgroundImage = "";
-    return;
-  }
-  photoPreview.classList.remove("hidden");
-  photoPreview.style.backgroundImage = `url('${photo}')`;
+function removeCourt(id) {
+  const court = courts.find(c => c.id === id);
+  if (court) players.push(...court.teamOne, ...court.teamTwo);
+  courts = courts.filter(c => c.id !== id);
+  if (!courts.length) courts.push(makeCourt("Court 1"));
+  saveState();
+  renderAll();
 }
 
 function addPlayer() {
-  const name = String(playerNameInput.value || "").trim();
-  if (!name) {
-    alert("Enter player name.");
-    return;
-  }
+  const name = playerNameInput.value.trim();
+  if (!name) return alert("Enter player name.");
 
-  players.push({
-    id: makeId(),
-    name,
-    photo: selectedPhotoData || ""
-  });
-
+  players.push({ id: makeId(), name, photo: selectedPhotoData || "" });
   playerNameInput.value = "";
   selectedPhotoData = "";
   photoInput.value = "";
   showPhotoPreview("");
-
-  saveState();
-  renderAll();
-}
-
-async function openCamera() {
-  try {
-    closeCamera();
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: cameraFacing },
-      audio: false
-    });
-
-    cameraVideo.srcObject = cameraStream;
-    cameraPanel.classList.remove("hidden");
-  } catch (error) {
-    alert("Camera could not open. Use HTTPS/Vercel and allow camera permission.");
-  }
-}
-
-function flipCamera() {
-  cameraFacing = cameraFacing === "user" ? "environment" : "user";
-  openCamera();
-}
-
-function capturePhoto() {
-  const width = cameraVideo.videoWidth;
-  const height = cameraVideo.videoHeight;
-
-  cameraCanvas.width = width;
-  cameraCanvas.height = height;
-
-  cameraCanvas.getContext("2d").drawImage(cameraVideo, 0, 0, width, height);
-
-  selectedPhotoData = cameraCanvas.toDataURL("image/jpeg", 0.8);
-  showPhotoPreview(selectedPhotoData);
-  closeCamera();
-}
-
-function closeCamera() {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => track.stop());
-  }
-  cameraStream = null;
-  cameraPanel.classList.add("hidden");
-}
-
-function addCourt() {
-  courts.push(makeCourt(`Court ${courts.length + 1}`));
-  saveState();
-  renderAll();
-}
-
-function removeCourt(courtId) {
-  if (!confirm("Remove this court? Players on this court will return to the stack.")) return;
-  const court = courts.find(c => c.id === courtId);
-  if (court) {
-    players.push(...court.teamOne, ...court.teamTwo);
-  }
-  courts = courts.filter(c => c.id !== courtId);
-  if (!courts.length) courts.push(makeCourt("Court 1"));
   saveState();
   renderAll();
 }
@@ -463,58 +420,84 @@ function loadNextFour(courtId) {
   if (!court) return;
 
   if (court.teamOne.length || court.teamTwo.length) {
-    alert("Court already has players. Clear it first.");
-    return;
+    return alert("Court already has players. Clear or finish the game first.");
   }
 
-  const nextPlayers = players.splice(0, 4);
-  court.teamOne = nextPlayers.slice(0, 2);
-  court.teamTwo = nextPlayers.slice(2, 4);
+  if (rotationRule.value === "winnerVsWinner" && courts.length > 1 && winnerTeams.length >= 2) {
+    court.teamOne = winnerTeams.shift().players;
+    court.teamTwo = winnerTeams.shift().players;
+  } else {
+    const next = players.splice(0, 4);
+    court.teamOne = next.slice(0, 2);
+    court.teamTwo = next.slice(2, 4);
+  }
+
   court.startedAt = Date.now();
+  saveState();
+  renderAll();
+}
+
+function loadAllEmptyCourts() {
+  courts.forEach(court => {
+    if (!court.teamOne.length && !court.teamTwo.length) loadNextFour(court.id);
+  });
+}
+
+function finishGame(courtId, winnerKey) {
+  const court = courts.find(c => c.id === courtId);
+  if (!court) return;
+
+  const winners = winnerKey === "teamOne" ? court.teamOne : court.teamTwo;
+  const losers = winnerKey === "teamOne" ? court.teamTwo : court.teamOne;
+  const rule = rotationRule.value;
+
+  if (rule === "winnerVsWinner" && courts.length > 1) {
+    winnerTeams.push({ id: makeId(), players: winners });
+    players.push(...losers);
+    court.teamOne = [];
+    court.teamTwo = [];
+    court.startedAt = null;
+  } else if (rule === "split") {
+    players.push(...losers);
+    const nextTwo = players.splice(0, 2);
+    court.teamOne = [winners[0], nextTwo[0]].filter(Boolean);
+    court.teamTwo = [winners[1], nextTwo[1]].filter(Boolean);
+    court.startedAt = Date.now();
+  } else if (rule === "all") {
+    players.push(...court.teamOne, ...court.teamTwo);
+    const next = players.splice(0, 4);
+    court.teamOne = next.slice(0, 2);
+    court.teamTwo = next.slice(2, 4);
+    court.startedAt = Date.now();
+  } else {
+    players.push(...losers);
+    const nextTwo = players.splice(0, 2);
+    court.teamOne = winners;
+    court.teamTwo = nextTwo;
+    court.startedAt = Date.now();
+  }
 
   saveState();
   renderAll();
 }
 
-function clearCourt(courtId) {
-  const court = courts.find(c => c.id === courtId);
+function clearCourt(id) {
+  const court = courts.find(c => c.id === id);
   if (!court) return;
-
   players.push(...court.teamOne, ...court.teamTwo);
   court.teamOne = [];
   court.teamTwo = [];
   court.startedAt = null;
-
   saveState();
   renderAll();
 }
 
-function shuffleCourt(courtId) {
-  const court = courts.find(c => c.id === courtId);
+function shuffleCourt(id) {
+  const court = courts.find(c => c.id === id);
   if (!court) return;
-
   const all = shuffle([...court.teamOne, ...court.teamTwo]);
   court.teamOne = all.slice(0, 2);
   court.teamTwo = all.slice(2, 4);
-
-  saveState();
-  renderAll();
-}
-
-function finishGame(courtId, winner) {
-  const court = courts.find(c => c.id === courtId);
-  if (!court) return;
-
-  const winners = winner === "teamOne" ? court.teamOne : court.teamTwo;
-  const losers = winner === "teamOne" ? court.teamTwo : court.teamOne;
-
-  players.push(...losers);
-
-  const nextTwo = players.splice(0, 2);
-  court.teamOne = winners;
-  court.teamTwo = nextTwo;
-  court.startedAt = Date.now();
-
   saveState();
   renderAll();
 }
@@ -522,32 +505,9 @@ function finishGame(courtId, winner) {
 function removeFromCourt(courtId, teamKey, playerId) {
   const court = courts.find(c => c.id === courtId);
   if (!court) return;
-
   const player = court[teamKey].find(p => p.id === playerId);
   court[teamKey] = court[teamKey].filter(p => p.id !== playerId);
-
   if (player) players.push(player);
-
-  saveState();
-  renderAll();
-}
-
-function moveUp(index) {
-  if (index <= 0) return;
-  [players[index - 1], players[index]] = [players[index], players[index - 1]];
-  saveState();
-  renderAll();
-}
-
-function moveDown(index) {
-  if (index >= players.length - 1) return;
-  [players[index + 1], players[index]] = [players[index], players[index + 1]];
-  saveState();
-  renderAll();
-}
-
-function removePlayer(index) {
-  players.splice(index, 1);
   saveState();
   renderAll();
 }
@@ -567,9 +527,32 @@ function shuffle(list) {
   return copy;
 }
 
+function moveUp(i) {
+  if (i <= 0) return;
+  [players[i - 1], players[i]] = [players[i], players[i - 1]];
+  saveState();
+  renderAll();
+}
+
+function moveDown(i) {
+  if (i >= players.length - 1) return;
+  [players[i + 1], players[i]] = [players[i], players[i + 1]];
+  saveState();
+  renderAll();
+}
+
+function removePlayer(i) {
+  players.splice(i, 1);
+  saveState();
+  renderAll();
+}
+
 function renderAll() {
+  renderScore();
   renderQueue();
   renderCourts();
+  renderWinnerQueue();
+  renderRuleDescription();
 }
 
 function renderQueue() {
@@ -578,16 +561,14 @@ function renderQueue() {
     return;
   }
 
-  queueList.innerHTML = players.map((player, index) => `
+  queueList.innerHTML = players.map((p, i) => `
     <div class="queue-item">
-      <div class="queue-photo" style="${photoStyle(player.photo)}"></div>
-      <div>
-        <div class="queue-name">${index + 1}. ${escapeHtml(player.name)}</div>
-      </div>
-      <div class="queue-buttons">
-        <button onclick="moveUp(${index})">▲</button>
-        <button onclick="moveDown(${index})">▼</button>
-        <button class="danger" onclick="removePlayer(${index})">Remove</button>
+      <div class="queue-photo" style="${photoStyle(p.photo)}"></div>
+      <div class="queue-name">${i + 1}. ${escapeHtml(p.name)}</div>
+      <div class="mini-buttons">
+        <button onclick="moveUp(${i})">▲</button>
+        <button onclick="moveDown(${i})">▼</button>
+        <button class="danger" onclick="removePlayer(${i})">Remove</button>
       </div>
     </div>
   `).join("");
@@ -604,22 +585,20 @@ function renderCourts() {
       <div class="court-grid">
         <div>
           <h3>Team 1</h3>
-          <div class="player-slots">${renderPlayerSlots(court, "teamOne")}</div>
+          <div class="player-slots">${renderSlots(court, "teamOne")}</div>
         </div>
-
         <div class="vs">VS</div>
-
         <div>
           <h3>Team 2</h3>
-          <div class="player-slots">${renderPlayerSlots(court, "teamTwo")}</div>
+          <div class="player-slots">${renderSlots(court, "teamTwo")}</div>
         </div>
       </div>
 
       <div class="court-actions">
         <button onclick="loadNextFour('${court.id}')">Load Next 4</button>
-        <button onclick="finishGame('${court.id}', 'teamOne')">Team 1 Wins</button>
-        <button onclick="finishGame('${court.id}', 'teamTwo')">Team 2 Wins</button>
-        <button onclick="shuffleCourt('${court.id}')">Shuffle Court</button>
+        <button class="green" onclick="finishGame('${court.id}', 'teamOne')">Team 1 Wins</button>
+        <button class="green" onclick="finishGame('${court.id}', 'teamTwo')">Team 2 Wins</button>
+        <button class="yellow" onclick="shuffleCourt('${court.id}')">Shuffle</button>
         <button class="danger" onclick="clearCourt('${court.id}')">Clear</button>
       </div>
 
@@ -630,35 +609,200 @@ function renderCourts() {
   `).join("");
 }
 
-function renderPlayerSlots(court, teamKey) {
+function renderSlots(court, teamKey) {
   const slots = [...court[teamKey]];
   while (slots.length < 2) slots.push(null);
 
-  return slots.map(player => {
-    if (!player) {
-      return `
-        <div class="player-card">
-          <div class="player-photo"></div>
-          <div class="player-name">Empty</div>
-        </div>
-      `;
+  return slots.map(p => {
+    if (!p) {
+      return `<div class="player-card"><div class="player-photo"></div><div class="player-name">Empty</div></div>`;
     }
 
     return `
       <div class="player-card">
-        <div class="player-photo" style="${photoStyle(player.photo)}"></div>
-        <div class="player-name">${escapeHtml(player.name)}</div>
-        <button class="danger" onclick="removeFromCourt('${court.id}', '${teamKey}', '${player.id}')">Remove</button>
+        <div class="player-photo" style="${photoStyle(p.photo)}"></div>
+        <div class="player-name">${escapeHtml(p.name)}</div>
+        <button class="danger" onclick="removeFromCourt('${court.id}', '${teamKey}', '${p.id}')">Remove</button>
       </div>
     `;
   }).join("");
 }
 
-function renameCourt(courtId, value) {
-  const court = courts.find(c => c.id === courtId);
+function renderWinnerQueue() {
+  winnerQueueCard.classList.toggle("hidden", !(courts.length > 1 && rotationRule.value === "winnerVsWinner"));
+
+  if (!winnerTeams.length) {
+    winnerQueue.innerHTML = `<div class="player-card">No winner teams waiting.</div>`;
+    return;
+  }
+
+  winnerQueue.innerHTML = winnerTeams.map((team, i) => `
+    <div class="player-card">
+      <div class="player-name">Winner Team ${i + 1}</div>
+      <p>${team.players.map(p => escapeHtml(p.name)).join(" / ")}</p>
+    </div>
+  `).join("");
+}
+
+function renameCourt(id, value) {
+  const court = courts.find(c => c.id === id);
   if (!court) return;
   court.name = value || "Court";
   saveState();
+}
+
+function renderRuleDescription() {
+  const rule = rotationRule.value;
+  if (rule === "winnerVsWinner" && courts.length < 2) {
+    ruleDescription.textContent = "Winner vs Winner needs 2 or more courts. With 1 court, use King of Court or Winners Split.";
+  } else if (rule === "winnerVsWinner") {
+    ruleDescription.textContent = "Winners from each court go to the Winner Queue. Next empty court can load Winner Team vs Winner Team.";
+  } else if (rule === "split") {
+    ruleDescription.textContent = "Winning team splits. Each winner gets a new partner from the waiting stack.";
+  } else if (rule === "all") {
+    ruleDescription.textContent = "All 4 players rotate out. The next 4 players from the waiting stack play.";
+  } else {
+    ruleDescription.textContent = "Winners stay. Losers go to the back. Next 2 players come in.";
+  }
+}
+
+function saveSettings() {
+  saveState();
+  renderAll();
+}
+
+async function openCamera() {
+  try {
+    closeCamera();
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: cameraFacing },
+      audio: false
+    });
+    cameraVideo.srcObject = cameraStream;
+    cameraPanel.classList.remove("hidden");
+  } catch {
+    alert("Camera could not open. Use Safari/Chrome and allow camera permission.");
+  }
+}
+
+function flipCamera() {
+  cameraFacing = cameraFacing === "user" ? "environment" : "user";
+  openCamera();
+}
+
+function capturePhoto() {
+  cameraCanvas.width = cameraVideo.videoWidth;
+  cameraCanvas.height = cameraVideo.videoHeight;
+  cameraCanvas.getContext("2d").drawImage(cameraVideo, 0, 0);
+  selectedPhotoData = cameraCanvas.toDataURL("image/jpeg", 0.8);
+  showPhotoPreview(selectedPhotoData);
+  closeCamera();
+}
+
+function closeCamera() {
+  if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
+  cameraStream = null;
+  cameraPanel.classList.add("hidden");
+}
+
+function resizeImage(file, maxSize) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let w = img.width, h = img.height;
+        if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", 0.8));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function showPhotoPreview(photo) {
+  photoPreview.classList.toggle("hidden", !photo);
+  photoPreview.style.backgroundImage = photo ? `url('${photo}')` : "";
+}
+
+function getServingTeam() { return servingTeam === "A" ? teamA : teamB; }
+function getReceivingTeam() { return servingTeam === "A" ? teamB : teamA; }
+
+function saveScoreHistory() {
+  scoreHistory.push({
+    teamA: {...teamA},
+    teamB: {...teamB},
+    servingTeam,
+    serverNumberValue
+  });
+}
+
+function renderScore() {
+  const serving = getServingTeam();
+  const receiving = getReceivingTeam();
+  leftName.value = serving.name;
+  rightName.value = receiving.name;
+  leftScore.textContent = serving.score;
+  rightScore.textContent = receiving.score;
+  serverNumber.textContent = serverNumberValue;
+}
+
+function saveNames() {
+  getServingTeam().name = leftName.value;
+  getReceivingTeam().name = rightName.value;
+}
+
+function addPointServing() {
+  saveNames(); saveScoreHistory();
+  getServingTeam().score++;
+  renderScore();
+}
+
+function addPointReceiving() {
+  saveNames(); saveScoreHistory();
+  getReceivingTeam().score++;
+  renderScore();
+}
+
+function secondServe() {
+  saveScoreHistory();
+  serverNumberValue = 2;
+  renderScore();
+}
+
+function sideOut() {
+  saveNames(); saveScoreHistory();
+  servingTeam = servingTeam === "A" ? "B" : "A";
+  serverNumberValue = 1;
+  renderScore();
+}
+
+function undoScore() {
+  const prev = scoreHistory.pop();
+  if (!prev) return;
+  teamA = prev.teamA;
+  teamB = prev.teamB;
+  servingTeam = prev.servingTeam;
+  serverNumberValue = prev.serverNumberValue;
+  renderScore();
+}
+
+function resetScore() {
+  saveScoreHistory();
+  teamA.score = 0;
+  teamB.score = 0;
+  servingTeam = "A";
+  serverNumberValue = 2;
+  renderScore();
+}
+
+function goFullscreen() {
+  document.documentElement.requestFullscreen?.();
 }
 
 function formatTime(ms) {
@@ -669,8 +813,7 @@ function formatTime(ms) {
 }
 
 function photoStyle(photo) {
-  if (!photo) return "";
-  return `background-image: url('${photo}');`;
+  return photo ? `background-image:url('${photo}')` : "";
 }
 
 function escapeHtml(value) {
@@ -685,15 +828,24 @@ function escapeHtml(value) {
 function saveState() {
   localStorage.setItem("pickleStackPlayers", JSON.stringify(players));
   localStorage.setItem("pickleStackCourts", JSON.stringify(courts));
+  localStorage.setItem("pickleStackWinnerTeams", JSON.stringify(winnerTeams));
+  localStorage.setItem("pickleStackRotation", rotationRule.value);
 }
 
 function loadState() {
   try {
     players = JSON.parse(localStorage.getItem("pickleStackPlayers") || "[]");
     courts = JSON.parse(localStorage.getItem("pickleStackCourts") || "[]");
+    winnerTeams = JSON.parse(localStorage.getItem("pickleStackWinnerTeams") || "[]");
+    setTimeout(() => {
+      const savedRule = localStorage.getItem("pickleStackRotation");
+      if (savedRule) rotationRule.value = savedRule;
+      renderRuleDescription();
+    }, 0);
   } catch {
     players = [];
     courts = [];
+    winnerTeams = [];
   }
 }
 
@@ -701,13 +853,14 @@ function resetAll() {
   if (!confirm("Reset everything?")) return;
   players = [];
   courts = [makeCourt("Court 1")];
+  winnerTeams = [];
   saveState();
   renderAll();
 }
 
 function copyLink() {
   navigator.clipboard.writeText(window.location.href);
-  alert("App link copied.");
+  alert("Link copied.");
 }
 </script>
 </body>
