@@ -1,101 +1,419 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PickleStack Live</title>
+let players = [];
+let court = {
+  teamOne: [],
+  teamTwo: []
+};
 
-<style>
-body{
-  font-family:Arial,sans-serif;
-  margin:0;
-  background:#0f172a;
-  color:white;
-  padding:20px;
+let selectedPhotoData = "";
+let cameraStream = null;
+
+const playerNameInput = document.getElementById("playerNameInput");
+const photoInput = document.getElementById("photoInput");
+const photoPreview = document.getElementById("photoPreview");
+const cameraPanel = document.getElementById("cameraPanel");
+const cameraVideo = document.getElementById("cameraVideo");
+const cameraCanvas = document.getElementById("cameraCanvas");
+const queueList = document.getElementById("queueList");
+const courtTeamOne = document.getElementById("courtTeamOne");
+const courtTeamTwo = document.getElementById("courtTeamTwo");
+const rotationRule = document.getElementById("rotationRule");
+const ruleDescription = document.getElementById("ruleDescription");
+
+loadState();
+renderRuleDescription();
+renderAll();
+
+rotationRule.addEventListener("change", () => {
+  localStorage.setItem("pickleballRotationRule", rotationRule.value);
+  renderRuleDescription();
+});
+
+photoInput.addEventListener("change", async event => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  selectedPhotoData = await resizeImage(file, 500);
+  showPhotoPreview(selectedPhotoData);
+});
+
+function resizeImage(file, maxSize) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+
+    reader.onload = event => {
+      const img = new Image();
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height && width > maxSize) {
+          height = Math.round((height * maxSize) / width);
+          width = maxSize;
+        } else if (height > maxSize) {
+          width = Math.round((width * maxSize) / height);
+          height = maxSize;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        resolve(canvas.toDataURL("image/jpeg", 0.8));
+      };
+
+      img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
 }
 
-h1{
-  text-align:center;
+function showPhotoPreview(photo) {
+  if (!photo) {
+    photoPreview.classList.add("hidden");
+    photoPreview.style.backgroundImage = "";
+    return;
+  }
+
+  photoPreview.classList.remove("hidden");
+  photoPreview.style.backgroundImage = `url('${photo}')`;
 }
 
-.card{
-  background:#1e293b;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:15px;
+function addPlayer() {
+  const name = String(playerNameInput.value || "").trim();
+
+  if (!name) {
+    alert("Enter player name.");
+    return;
+  }
+
+  players.push({
+    id: makeId(),
+    name,
+    photo: selectedPhotoData || ""
+  });
+
+  playerNameInput.value = "";
+  selectedPhotoData = "";
+  photoInput.value = "";
+  showPhotoPreview("");
+
+  saveState();
+  renderAll();
 }
 
-button{
-  background:#22c55e;
-  color:white;
-  border:none;
-  padding:12px;
-  border-radius:8px;
-  cursor:pointer;
+function makeId() {
+  if (window.crypto && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  return String(Date.now()) + Math.random().toString(16).slice(2);
 }
 
-input{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  border-radius:8px;
-  border:none;
+async function openCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: "user"
+      },
+      audio: false
+    });
+
+    cameraVideo.srcObject = cameraStream;
+    cameraPanel.classList.remove("hidden");
+  } catch (error) {
+    alert("Camera could not open. Use Chrome and allow camera permission.");
+  }
 }
 
-.player{
-  padding:10px;
-  background:#334155;
-  margin-top:8px;
-  border-radius:8px;
-}
-</style>
-</head>
+function capturePhoto() {
+  const width = cameraVideo.videoWidth;
+  const height = cameraVideo.videoHeight;
 
-<body>
+  cameraCanvas.width = width;
+  cameraCanvas.height = height;
 
-<h1>🏓 PickleStack Live</h1>
+  const ctx = cameraCanvas.getContext("2d");
+  ctx.drawImage(cameraVideo, 0, 0, width, height);
 
-<div class="card">
-<h2>Add Player</h2>
+  selectedPhotoData = cameraCanvas.toDataURL("image/jpeg", 0.8);
+  showPhotoPreview(selectedPhotoData);
 
-<input id="playerName" placeholder="Player Name">
-
-<button onclick="addPlayer()">Join Queue</button>
-</div>
-
-<div class="card">
-<h2>Waiting Queue</h2>
-
-<div id="queue"></div>
-</div>
-
-<script>
-
-let players=[];
-
-function addPlayer(){
-
-const name=document.getElementById("playerName").value.trim();
-
-if(!name) return;
-
-players.push(name);
-
-document.getElementById("playerName").value="";
-
-render();
+  closeCamera();
 }
 
-function render(){
+function closeCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+  }
 
-document.getElementById("queue").innerHTML=
-players.map((p,i)=>
-`<div class="player">${i+1}. ${p}</div>`
-).join("");
-
+  cameraStream = null;
+  cameraPanel.classList.add("hidden");
 }
 
-</script>
+function loadNextFour() {
+  if (court.teamOne.length || court.teamTwo.length) {
+    alert("Court already has players. Finish or clear the court first.");
+    return;
+  }
 
-</body>
-</html>
+  const nextPlayers = players.splice(0, 4);
+
+  court.teamOne = nextPlayers.slice(0, 2);
+  court.teamTwo = nextPlayers.slice(2, 4);
+
+  saveState();
+  renderAll();
+}
+
+function finishGame(winner) {
+  const rule = rotationRule.value;
+
+  if (rule === "king") {
+    kingOfCourt(winner);
+  }
+
+  if (rule === "allLeave") {
+    nextGameAllLeave();
+  }
+
+  if (rule === "twoOnTwoOff") {
+    twoOnTwoOff(winner);
+  }
+
+  if (rule === "winnersSplit") {
+    winnersSplit(winner);
+  }
+
+  saveState();
+  renderAll();
+}
+
+function kingOfCourt(winner) {
+  const winners = winner === "teamOne" ? court.teamOne : court.teamTwo;
+  const losers = winner === "teamOne" ? court.teamTwo : court.teamOne;
+
+  players.push(...losers);
+
+  const nextTwo = players.splice(0, 2);
+
+  court.teamOne = winners;
+  court.teamTwo = nextTwo;
+}
+
+function nextGameAllLeave() {
+  players.push(...court.teamOne, ...court.teamTwo);
+
+  const nextFour = players.splice(0, 4);
+
+  court.teamOne = nextFour.slice(0, 2);
+  court.teamTwo = nextFour.slice(2, 4);
+
+  saveState();
+  renderAll();
+}
+
+function twoOnTwoOff(winner) {
+  const winners = winner === "teamOne" ? court.teamOne : court.teamTwo;
+  const losers = winner === "teamOne" ? court.teamTwo : court.teamOne;
+
+  players.push(...losers);
+
+  const nextTwo = players.splice(0, 2);
+
+  court.teamOne = winners;
+  court.teamTwo = nextTwo;
+}
+
+function winnersSplit(winner) {
+  const winners = winner === "teamOne" ? court.teamOne : court.teamTwo;
+  const losers = winner === "teamOne" ? court.teamTwo : court.teamOne;
+
+  players.push(...losers);
+
+  const nextTwo = players.splice(0, 2);
+
+  court.teamOne = [winners[0], nextTwo[0]].filter(Boolean);
+  court.teamTwo = [winners[1], nextTwo[1]].filter(Boolean);
+}
+
+function clearCourt() {
+  players.push(...court.teamOne, ...court.teamTwo);
+  court.teamOne = [];
+  court.teamTwo = [];
+
+  saveState();
+  renderAll();
+}
+
+function moveUp(index) {
+  if (index <= 0) return;
+
+  const temp = players[index - 1];
+  players[index - 1] = players[index];
+  players[index] = temp;
+
+  saveState();
+  renderAll();
+}
+
+function moveDown(index) {
+  if (index >= players.length - 1) return;
+
+  const temp = players[index + 1];
+  players[index + 1] = players[index];
+  players[index] = temp;
+
+  saveState();
+  renderAll();
+}
+
+function removePlayer(index) {
+  players.splice(index, 1);
+  saveState();
+  renderAll();
+}
+
+function renderAll() {
+  renderQueue();
+  renderCourt();
+}
+
+function renderQueue() {
+  if (!players.length) {
+    queueList.innerHTML = `<div class="player-card">No players waiting.</div>`;
+    return;
+  }
+
+  queueList.innerHTML = players.map((player, index) => `
+    <div class="queue-item">
+      <div class="queue-photo" style="${photoStyle(player.photo)}"></div>
+
+      <div>
+        <div class="queue-name">${escapeHtml(index + 1)}. ${escapeHtml(player.name)}</div>
+      </div>
+
+      <div class="queue-buttons">
+        <button onclick="moveUp(${index})">▲</button>
+        <button onclick="moveDown(${index})">▼</button>
+        <button onclick="removePlayer(${index})">Remove</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderCourt() {
+  courtTeamOne.innerHTML = renderPlayerSlots(court.teamOne);
+  courtTeamTwo.innerHTML = renderPlayerSlots(court.teamTwo);
+}
+
+function renderPlayerSlots(list) {
+  const slots = [...list];
+
+  while (slots.length < 2) {
+    slots.push(null);
+  }
+
+  return slots.map(player => {
+    if (!player) {
+      return `
+        <div class="player-card">
+          <div class="player-photo"></div>
+          <div class="player-name">Empty</div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="player-card">
+        <div class="player-photo" style="${photoStyle(player.photo)}"></div>
+        <div class="player-name">${escapeHtml(player.name)}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function photoStyle(photo) {
+  if (!photo) return "";
+  return `background-image: url('${photo}');`;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function saveState() {
+  try {
+    localStorage.setItem("pickleballStackPlayers", JSON.stringify(players));
+    localStorage.setItem("pickleballStackCourt", JSON.stringify(court));
+    localStorage.setItem("pickleballRotationRule", rotationRule.value);
+  } catch (error) {
+    alert("Photo storage is full. Use smaller photos or reset the stack.");
+  }
+}
+
+function loadState() {
+  try {
+    players = JSON.parse(localStorage.getItem("pickleballStackPlayers") || "[]");
+    court = JSON.parse(localStorage.getItem("pickleballStackCourt") || '{"teamOne":[],"teamTwo":[]}');
+
+    const savedRule = localStorage.getItem("pickleballRotationRule");
+
+    if (savedRule) {
+      rotationRule.value = savedRule;
+    }
+  } catch {
+    players = [];
+    court = {
+      teamOne: [],
+      teamTwo: []
+    };
+  }
+}
+
+function renderRuleDescription() {
+  const value = rotationRule.value;
+
+  if (value === "king") {
+    ruleDescription.textContent =
+      "Winners stay on the court. Losers go to the back of the stack. Next 2 players come in.";
+  }
+
+  if (value === "allLeave") {
+    ruleDescription.textContent =
+      "All 4 players leave after every game. The next 4 players from the stack play.";
+  }
+
+  if (value === "twoOnTwoOff") {
+    ruleDescription.textContent =
+      "Same as king style: winners stay, losing team rotates out, next 2 players rotate in.";
+  }
+
+  if (value === "winnersSplit") {
+    ruleDescription.textContent =
+      "Winning team splits. Each winner partners with one incoming player.";
+  }
+}
+
+function resetAll() {
+  if (!confirm("Reset stack and court?")) return;
+
+  players = [];
+  court = {
+    teamOne: [],
+    teamTwo: []
+  };
+
+  saveState();
+  renderAll();
+}
