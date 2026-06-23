@@ -13,10 +13,15 @@
       font-family: Arial, Helvetica, sans-serif;
     }
     body { padding-bottom: 82px; }
-    .app { padding: 14px; max-width: 1400px; margin: auto; }
+    body.score-landscape { padding-bottom: 0; background: #000; }
+
+    .app { padding: 14px; max-width: 1500px; margin: auto; }
+    body.score-landscape .app { max-width: none; padding: 4px; }
+
     h1 { font-size: clamp(34px, 7vw, 70px); margin: 0; font-weight: 900; }
     h2 { margin-top: 0; }
     p { color: #94a3b8; }
+
     .card {
       background: #0f172a;
       border: 1px solid #334155;
@@ -24,6 +29,7 @@
       padding: 18px;
       margin-bottom: 16px;
     }
+
     button, .photo-btn {
       border: none;
       border-radius: 12px;
@@ -35,9 +41,12 @@
       cursor: pointer;
       text-align: center;
     }
+
     .green { background: #16a34a; }
     .yellow { background: #facc15; color: black; }
     .danger { background: #991b1b; }
+    .dark { background: #111827; border: 1px solid #475569; }
+
     input, select {
       width: 100%;
       border: 1px solid #475569;
@@ -47,9 +56,9 @@
       color: white;
       font-size: 18px;
     }
+
     .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .two-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
 
     .bottom-nav {
       position: fixed;
@@ -62,6 +71,13 @@
       border-top: 1px solid #334155;
       z-index: 50;
     }
+
+    body.score-landscape .bottom-nav,
+    body.score-landscape .normal-header,
+    body.score-landscape .voice-status {
+      display: none;
+    }
+
     .bottom-nav button {
       border-radius: 0;
       background: #020617;
@@ -69,6 +85,7 @@
       font-size: 13px;
       padding: 12px 4px;
     }
+
     .bottom-nav button.active { background: #2563eb; }
 
     .scoreboard {
@@ -80,12 +97,21 @@
       padding: 18px;
       min-height: 60vh;
     }
+
+    body.score-landscape .scoreboard {
+      min-height: 82vh;
+      border-radius: 8px;
+      padding: 8px;
+      gap: 6px;
+    }
+
     .score-column, .serve-column {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-around;
     }
+
     .team-name, .game-label {
       background: transparent;
       border: none;
@@ -93,8 +119,16 @@
       text-align: center;
       font-size: clamp(36px, 5vw, 80px);
       font-weight: 900;
+      outline: none;
     }
+
+    .team-name:focus, .game-label:focus {
+      background: #111827;
+      box-shadow: 0 0 0 3px #2563eb;
+    }
+
     .active-server { color: #38bdf8; }
+
     .score-number {
       width: 100%;
       background: transparent;
@@ -104,6 +138,11 @@
       font-weight: 900;
       line-height: .9;
     }
+
+    body.score-landscape .score-number {
+      font-size: clamp(150px, 25vw, 340px);
+    }
+
     .server-circle {
       width: clamp(160px, 20vw, 320px);
       height: clamp(160px, 20vw, 320px);
@@ -113,12 +152,32 @@
       font-size: clamp(110px, 15vw, 240px);
       font-weight: 900;
     }
+
+    body.score-landscape .server-circle {
+      width: clamp(120px, 20vw, 220px);
+      height: clamp(120px, 20vw, 220px);
+      font-size: clamp(90px, 15vw, 170px);
+    }
+
     .small-label { color: #94a3b8; font-weight: 900; }
+
     .controls {
       margin-top: 12px;
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(8, 1fr);
       gap: 8px;
+    }
+
+    body.score-landscape .controls {
+      grid-template-columns: repeat(8, 1fr);
+      margin-top: 6px;
+      gap: 5px;
+    }
+
+    body.score-landscape .controls button {
+      min-height: 38px;
+      font-size: 12px;
+      padding: 8px;
     }
 
     .photo-preview {
@@ -130,6 +189,7 @@
       background-position: center;
       border: 3px solid #38bdf8;
     }
+
     #cameraVideo {
       width: 100%;
       max-height: 420px;
@@ -138,6 +198,7 @@
     }
 
     .court-list, .queue-list, .winner-list { display: grid; gap: 12px; }
+
     .court-header {
       display: flex;
       justify-content: space-between;
@@ -145,24 +206,29 @@
       align-items: center;
       margin-bottom: 12px;
     }
+
     .timer { color: #38bdf8; font-size: 24px; font-weight: 900; }
+
     .court-grid {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       gap: 12px;
       align-items: center;
     }
+
     .vs {
       color: #facc15;
       font-size: clamp(34px, 6vw, 74px);
       font-weight: 900;
       text-align: center;
     }
+
     .player-slots {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
+
     .player-card {
       background: #020617;
       border: 1px solid #475569;
@@ -170,27 +236,32 @@
       padding: 10px;
       text-align: center;
     }
+
     .player-photo, .queue-photo {
       background: #1e293b;
       background-size: cover;
       background-position: center;
     }
+
     .player-photo {
       width: 100%;
       aspect-ratio: 1 / 1;
       border-radius: 16px;
       margin-bottom: 8px;
     }
+
     .queue-photo {
       width: 66px;
       height: 66px;
       border-radius: 14px;
     }
+
     .player-name, .queue-name {
       font-weight: 900;
       font-size: 20px;
       word-break: break-word;
     }
+
     .queue-item {
       display: grid;
       grid-template-columns: 66px 1fr auto;
@@ -201,22 +272,35 @@
       border-radius: 16px;
       padding: 10px;
     }
-    .mini-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .mini-buttons { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 8px; }
     .mini-buttons button { padding: 8px 10px; font-size: 13px; }
+
     .court-actions {
       margin-top: 12px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 8px;
     }
 
+    .voice-status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 16px;
+      color: #38bdf8;
+    }
+
     @media (max-width: 800px) {
-      .grid, .two-grid, .court-grid, .scoreboard { grid-template-columns: 1fr; }
+      .grid, .court-grid, .scoreboard { grid-template-columns: 1fr; }
       .controls, .court-actions { grid-template-columns: 1fr 1fr; }
       .queue-item { grid-template-columns: 60px 1fr; }
-      .mini-buttons { grid-column: 1 / -1; }
+      .queue-item .mini-buttons { grid-column: 1 / -1; }
       .score-number { font-size: clamp(130px, 42vw, 260px); }
       .server-circle { width: 170px; height: 170px; font-size: 125px; }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      body.score-landscape .scoreboard { grid-template-columns: 1fr 1fr .9fr; }
     }
   </style>
 </head>
@@ -224,8 +308,10 @@
 <body>
 <div class="app">
   <section id="tabScore">
-    <h1>🏓 PickleStack Live</h1>
-    <p>Scoreboard, stack rotation, courts, photos, and timers.</p>
+    <div class="normal-header">
+      <h1>🏓 PickleStack Live</h1>
+      <p>Scoreboard, stack rotation, courts, photos, speaker, and timers.</p>
+    </div>
 
     <main class="scoreboard">
       <section class="score-column">
@@ -252,15 +338,21 @@
       <button onclick="secondServe()">2nd Serve</button>
       <button onclick="sideOut()">Side Out</button>
       <button onclick="undoScore()">Undo</button>
+      <button onclick="speakScore()">Speaker</button>
+      <button onclick="toggleLandscape()">Landscape</button>
+      <button onclick="startVoice()">Voice</button>
       <button class="danger" onclick="resetScore()">Reset</button>
-      <button onclick="goFullscreen()">Fullscreen</button>
     </section>
+
+    <div class="voice-status">
+      Voice: <span id="voiceStatus">Off</span> · <span id="lastCommand">Say “point”, “second serve”, “side out”, “undo”, or “reset”.</span>
+    </div>
   </section>
 
   <section id="tabCourts" class="hidden">
     <div class="card">
       <h1>Courts</h1>
-      <p>Use 1 court or unlimited courts. Winner vs Winner only appears when you have 2+ courts.</p>
+      <p>Use 1 court or unlimited courts. Winner vs Winner works when there are 2+ courts.</p>
       <div class="grid">
         <button class="green" onclick="addCourt()">+ Add Court</button>
         <button class="yellow" onclick="shuffleQueue()">Shuffle Queue</button>
@@ -307,6 +399,12 @@
     <section class="card">
       <h2>Waiting Stack</h2>
       <p>Next players are at the top.</p>
+      <div class="grid" style="margin-bottom:12px;">
+        <button class="yellow" onclick="shuffleQueue()">Shuffle Stack</button>
+        <button onclick="loadAllEmptyCourts()">Load Empty Courts</button>
+        <button class="green" onclick="addCourt()">Add Court</button>
+        <button class="danger" onclick="clearWaitingQueue()">Clear Waiting</button>
+      </div>
       <div id="queueList" class="queue-list"></div>
     </section>
   </section>
@@ -314,7 +412,7 @@
   <section id="tabJoin" class="hidden">
     <section class="card">
       <h1>Player Join</h1>
-      <p>For now, share this page link. Next version will add real QR + Firebase live sync.</p>
+      <p>For now, share this page link. Firebase live sync + QR join will be the next upgrade.</p>
       <button onclick="copyLink()">Copy App Link</button>
     </section>
   </section>
@@ -326,7 +424,7 @@
       <select id="rotationRule" onchange="saveSettings()">
         <option value="king">1 Court: King of Court</option>
         <option value="split">1 Court: Winners Split</option>
-        <option value="all">All 4 Rotate</option>
+        <option value="all">All 4 Rotate / Next 4 Players</option>
         <option value="winnerVsWinner">2+ Courts: Winner vs Winner</option>
       </select>
       <p id="ruleDescription"></p>
@@ -355,6 +453,8 @@ let teamB = { name: "Team B", score: 0 };
 let servingTeam = "A";
 let serverNumberValue = 2;
 let scoreHistory = [];
+let recognition = null;
+let voiceRunning = false;
 
 const tabs = ["Score", "Courts", "Stack", "Join", "Settings"];
 
@@ -372,10 +472,24 @@ photoInput.addEventListener("change", async event => {
 });
 
 function showTab(name) {
+  document.body.classList.remove("score-landscape");
   tabs.forEach(t => {
     document.getElementById("tab" + t).classList.toggle("hidden", t !== name);
     document.getElementById("nav" + t).classList.toggle("active", t === name);
   });
+}
+
+function toggleLandscape() {
+  showTab("Score");
+  document.body.classList.toggle("score-landscape");
+
+  if (document.body.classList.contains("score-landscape")) {
+    document.documentElement.requestFullscreen?.();
+    screen.orientation?.lock?.("landscape").catch(() => {});
+  } else {
+    document.exitFullscreen?.();
+    screen.orientation?.unlock?.();
+  }
 }
 
 function makeId() {
@@ -394,6 +508,7 @@ function addCourt() {
 }
 
 function removeCourt(id) {
+  if (!confirm("Remove this court? Players on court return to waiting stack.")) return;
   const court = courts.find(c => c.id === id);
   if (court) players.push(...court.teamOne, ...court.teamTwo);
   courts = courts.filter(c => c.id !== id);
@@ -420,9 +535,15 @@ function loadNextFour(courtId) {
   if (!court) return;
 
   if (court.teamOne.length || court.teamTwo.length) {
-    return alert("Court already has players. Clear or finish the game first.");
+    return alert("Court already has players. Use Team Wins, All 4 Out / Next 4, or Clear Court first.");
   }
 
+  loadFourIntoCourt(court);
+  saveState();
+  renderAll();
+}
+
+function loadFourIntoCourt(court) {
   if (rotationRule.value === "winnerVsWinner" && courts.length > 1 && winnerTeams.length >= 2) {
     court.teamOne = winnerTeams.shift().players;
     court.teamTwo = winnerTeams.shift().players;
@@ -433,14 +554,29 @@ function loadNextFour(courtId) {
   }
 
   court.startedAt = Date.now();
-  saveState();
-  renderAll();
 }
 
 function loadAllEmptyCourts() {
   courts.forEach(court => {
-    if (!court.teamOne.length && !court.teamTwo.length) loadNextFour(court.id);
+    if (!court.teamOne.length && !court.teamTwo.length) {
+      if (players.length >= 1 || winnerTeams.length >= 2) loadFourIntoCourt(court);
+    }
   });
+  saveState();
+  renderAll();
+}
+
+function allFourOutNextFour(courtId) {
+  const court = courts.find(c => c.id === courtId);
+  if (!court) return;
+
+  players.push(...court.teamOne, ...court.teamTwo);
+  court.teamOne = [];
+  court.teamTwo = [];
+
+  loadFourIntoCourt(court);
+  saveState();
+  renderAll();
 }
 
 function finishGame(courtId, winnerKey) {
@@ -452,23 +588,24 @@ function finishGame(courtId, winnerKey) {
   const rule = rotationRule.value;
 
   if (rule === "winnerVsWinner" && courts.length > 1) {
-    winnerTeams.push({ id: makeId(), players: winners });
+    if (winners.length) winnerTeams.push({ id: makeId(), players: winners });
     players.push(...losers);
     court.teamOne = [];
     court.teamTwo = [];
     court.startedAt = null;
-  } else if (rule === "split") {
+    loadAllEmptyCourts();
+    return;
+  }
+
+  if (rule === "split") {
     players.push(...losers);
     const nextTwo = players.splice(0, 2);
     court.teamOne = [winners[0], nextTwo[0]].filter(Boolean);
     court.teamTwo = [winners[1], nextTwo[1]].filter(Boolean);
     court.startedAt = Date.now();
   } else if (rule === "all") {
-    players.push(...court.teamOne, ...court.teamTwo);
-    const next = players.splice(0, 4);
-    court.teamOne = next.slice(0, 2);
-    court.teamTwo = next.slice(2, 4);
-    court.startedAt = Date.now();
+    allFourOutNextFour(courtId);
+    return;
   } else {
     players.push(...losers);
     const nextTwo = players.splice(0, 2);
@@ -502,18 +639,55 @@ function shuffleCourt(id) {
   renderAll();
 }
 
-function removeFromCourt(courtId, teamKey, playerId) {
+function returnCourtPlayerToQueue(courtId, teamKey, playerId) {
   const court = courts.find(c => c.id === courtId);
   if (!court) return;
+
   const player = court[teamKey].find(p => p.id === playerId);
   court[teamKey] = court[teamKey].filter(p => p.id !== playerId);
   if (player) players.push(player);
+
+  saveState();
+  renderAll();
+}
+
+function removeCourtPlayerCompletely(courtId, teamKey, playerId) {
+  if (!confirm("Remove this player completely?")) return;
+
+  const court = courts.find(c => c.id === courtId);
+  if (!court) return;
+
+  court[teamKey] = court[teamKey].filter(p => p.id !== playerId);
+
+  saveState();
+  renderAll();
+}
+
+function replaceCourtPlayer(courtId, teamKey, playerId) {
+  if (!players.length) return alert("No waiting players available.");
+
+  const court = courts.find(c => c.id === courtId);
+  if (!court) return;
+
+  const currentPlayer = court[teamKey].find(p => p.id === playerId);
+  const replacement = players.shift();
+
+  court[teamKey] = court[teamKey].map(p => p.id === playerId ? replacement : p);
+  if (currentPlayer) players.push(currentPlayer);
+
   saveState();
   renderAll();
 }
 
 function shuffleQueue() {
   players = shuffle(players);
+  saveState();
+  renderAll();
+}
+
+function clearWaitingQueue() {
+  if (!confirm("Clear all waiting players?")) return;
+  players = [];
   saveState();
   renderAll();
 }
@@ -598,7 +772,8 @@ function renderCourts() {
         <button onclick="loadNextFour('${court.id}')">Load Next 4</button>
         <button class="green" onclick="finishGame('${court.id}', 'teamOne')">Team 1 Wins</button>
         <button class="green" onclick="finishGame('${court.id}', 'teamTwo')">Team 2 Wins</button>
-        <button class="yellow" onclick="shuffleCourt('${court.id}')">Shuffle</button>
+        <button class="yellow" onclick="shuffleCourt('${court.id}')">Shuffle Court</button>
+        <button onclick="allFourOutNextFour('${court.id}')">All 4 Out / Next 4</button>
         <button class="danger" onclick="clearCourt('${court.id}')">Clear</button>
       </div>
 
@@ -622,7 +797,11 @@ function renderSlots(court, teamKey) {
       <div class="player-card">
         <div class="player-photo" style="${photoStyle(p.photo)}"></div>
         <div class="player-name">${escapeHtml(p.name)}</div>
-        <button class="danger" onclick="removeFromCourt('${court.id}', '${teamKey}', '${p.id}')">Remove</button>
+        <div class="mini-buttons">
+          <button onclick="returnCourtPlayerToQueue('${court.id}', '${teamKey}', '${p.id}')">Return</button>
+          <button onclick="replaceCourtPlayer('${court.id}', '${teamKey}', '${p.id}')">Replace</button>
+          <button class="danger" onclick="removeCourtPlayerCompletely('${court.id}', '${teamKey}', '${p.id}')">Remove</button>
+        </div>
       </div>
     `;
   }).join("");
@@ -654,15 +833,15 @@ function renameCourt(id, value) {
 function renderRuleDescription() {
   const rule = rotationRule.value;
   if (rule === "winnerVsWinner" && courts.length < 2) {
-    ruleDescription.textContent = "Winner vs Winner needs 2 or more courts. With 1 court, use King of Court or Winners Split.";
+    ruleDescription.textContent = "Winner vs Winner needs 2 or more courts. With 1 court, use King of Court, Winners Split, or All 4 Rotate.";
   } else if (rule === "winnerVsWinner") {
-    ruleDescription.textContent = "Winners from each court go to the Winner Queue. Next empty court can load Winner Team vs Winner Team.";
+    ruleDescription.textContent = "Winners from each court go to the Winner Queue. Empty courts can load Winner Team vs Winner Team.";
   } else if (rule === "split") {
     ruleDescription.textContent = "Winning team splits. Each winner gets a new partner from the waiting stack.";
   } else if (rule === "all") {
-    ruleDescription.textContent = "All 4 players rotate out. The next 4 players from the waiting stack play.";
+    ruleDescription.textContent = "All 4 players rotate out. The next 4 players from the waiting stack play automatically.";
   } else {
-    ruleDescription.textContent = "Winners stay. Losers go to the back. Next 2 players come in.";
+    ruleDescription.textContent = "Winners stay. Losers go to the back. Next 2 players come in automatically.";
   }
 }
 
@@ -734,12 +913,14 @@ function getServingTeam() { return servingTeam === "A" ? teamA : teamB; }
 function getReceivingTeam() { return servingTeam === "A" ? teamB : teamA; }
 
 function saveScoreHistory() {
+  saveNames();
   scoreHistory.push({
     teamA: {...teamA},
     teamB: {...teamB},
     servingTeam,
     serverNumberValue
   });
+  if (scoreHistory.length > 50) scoreHistory.shift();
 }
 
 function renderScore() {
@@ -750,6 +931,8 @@ function renderScore() {
   leftScore.textContent = serving.score;
   rightScore.textContent = receiving.score;
   serverNumber.textContent = serverNumberValue;
+  leftName.classList.add("active-server");
+  rightName.classList.remove("active-server");
 }
 
 function saveNames() {
@@ -758,38 +941,43 @@ function saveNames() {
 }
 
 function addPointServing() {
-  saveNames(); saveScoreHistory();
+  saveScoreHistory();
   getServingTeam().score++;
   renderScore();
+  speakScore();
 }
 
 function addPointReceiving() {
-  saveNames(); saveScoreHistory();
+  saveScoreHistory();
   getReceivingTeam().score++;
   renderScore();
+  speakScore();
 }
 
 function secondServe() {
   saveScoreHistory();
   serverNumberValue = 2;
   renderScore();
+  speak("Second serve");
 }
 
 function sideOut() {
-  saveNames(); saveScoreHistory();
+  saveScoreHistory();
   servingTeam = servingTeam === "A" ? "B" : "A";
   serverNumberValue = 1;
   renderScore();
+  speakScore();
 }
 
 function undoScore() {
   const prev = scoreHistory.pop();
-  if (!prev) return;
+  if (!prev) return speak("Nothing to undo");
   teamA = prev.teamA;
   teamB = prev.teamB;
   servingTeam = prev.servingTeam;
   serverNumberValue = prev.serverNumberValue;
   renderScore();
+  speak("Undo");
 }
 
 function resetScore() {
@@ -799,10 +987,74 @@ function resetScore() {
   servingTeam = "A";
   serverNumberValue = 2;
   renderScore();
+  speak("Zero zero two");
 }
 
-function goFullscreen() {
-  document.documentElement.requestFullscreen?.();
+function speak(text) {
+  if (!window.speechSynthesis) return alert("Speaker is not supported on this browser.");
+  window.speechSynthesis.cancel();
+  const message = new SpeechSynthesisUtterance(text);
+  message.rate = 1;
+  message.pitch = 1;
+  message.lang = "en-US";
+  window.speechSynthesis.speak(message);
+}
+
+function speakScore() {
+  const serving = getServingTeam();
+  const receiving = getReceivingTeam();
+  speak(`${serving.score} ${receiving.score} ${serverNumberValue}`);
+}
+
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return alert("Voice recognition is not supported in this browser. Use Chrome.");
+
+  if (voiceRunning) {
+    recognition.stop();
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  recognition.onstart = () => {
+    voiceRunning = true;
+    voiceStatus.textContent = "Listening";
+    lastCommand.textContent = "Listening...";
+  };
+
+  recognition.onresult = event => {
+    const result = event.results[event.results.length - 1];
+    const command = result[0].transcript;
+    handleVoiceCommand(command);
+  };
+
+  recognition.onerror = event => {
+    voiceStatus.textContent = "Error";
+    lastCommand.textContent = event.error;
+  };
+
+  recognition.onend = () => {
+    voiceRunning = false;
+    voiceStatus.textContent = "Stopped";
+  };
+
+  recognition.start();
+}
+
+function handleVoiceCommand(command) {
+  const text = String(command || "").toLowerCase();
+  lastCommand.textContent = `Heard: "${text}"`;
+
+  if (text.includes("point")) return addPointServing();
+  if (text.includes("second serve") || text.includes("serve two") || text.includes("server two")) return secondServe();
+  if (text.includes("side out") || text.includes("switch serve") || text.includes("switch server")) return sideOut();
+  if (text.includes("undo")) return undoScore();
+  if (text.includes("reset") || text.includes("new game")) return resetScore();
+  if (text.includes("speak score") || text.includes("say score") || text.includes("what is the score")) return speakScore();
 }
 
 function formatTime(ms) {
@@ -837,6 +1089,7 @@ function loadState() {
     players = JSON.parse(localStorage.getItem("pickleStackPlayers") || "[]");
     courts = JSON.parse(localStorage.getItem("pickleStackCourts") || "[]");
     winnerTeams = JSON.parse(localStorage.getItem("pickleStackWinnerTeams") || "[]");
+
     setTimeout(() => {
       const savedRule = localStorage.getItem("pickleStackRotation");
       if (savedRule) rotationRule.value = savedRule;
