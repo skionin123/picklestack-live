@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>PickleStack Pro</title>
+<title>PickleStack Live</title>
 <style>
 :root{
   --bg:#05070d;
@@ -319,6 +319,88 @@ body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
   body.score-mode .score-number{font-size:clamp(120px,24vw,300px)}
   body.score-mode .server-circle{width:clamp(104px,18vw,190px);height:clamp(104px,18vw,190px);font-size:clamp(76px,14vw,145px)}
 }
+
+/* Compact mobile court controls */
+.photo{
+  height:96px !important;
+  aspect-ratio:auto !important;
+}
+.player-card{
+  min-height:auto !important;
+  padding:10px !important;
+}
+.player-card .name{
+  font-size:14px;
+  line-height:1.1;
+}
+.player-card .meta{
+  font-size:11px;
+}
+.player-menu,
+.court-menu{
+  position:relative;
+  margin-top:8px;
+}
+.player-menu summary,
+.court-menu summary{
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+  border-radius:999px;
+  padding:8px 10px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+}
+.player-menu summary::-webkit-details-marker,
+.court-menu summary::-webkit-details-marker{display:none}
+.menu-panel{
+  display:grid;
+  gap:6px;
+  margin-top:7px;
+}
+.menu-panel button{
+  width:100%;
+  font-size:12px;
+  padding:8px 10px;
+}
+.main-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.secondary-actions{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.secondary-actions .menu-panel{
+  grid-template-columns:repeat(2,1fr);
+}
+@media(max-width:780px){
+  .photo{height:112px !important}
+  .team{gap:10px}
+  .player-card{border-radius:22px}
+  .court-grid{gap:14px}
+  .vs{font-size:24px}
+  .main-actions{
+    position:sticky;
+    bottom:78px;
+    z-index:8;
+    padding:8px;
+    margin-left:-8px;
+    margin-right:-8px;
+    border-radius:22px;
+    background:rgba(5,7,13,.75);
+    backdrop-filter:blur(16px);
+  }
+  .secondary-actions .menu-panel{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -607,8 +689,8 @@ function removePlayer(i){players.splice(i,1);saveState();renderAll()}
 function renderAll(){renderHome();renderScore();renderQueue();renderCourts();renderWinnerQueue();renderRuleDescription();renderWaitEstimate();renderStats();renderHistory()}
 function renderHome(){el("homeWaiting").textContent=players.length;el("homeCourts").textContent=courts.length;el("homeGames").textContent=courtHistory.length}
 function renderQueue(){el("queueList").innerHTML=players.length?players.map((p,i)=>`<div class="row"><div class="avatar" style="${photoStyle(p.photo)}"></div><div><div class="name">${i+1}. ${escapeHtml(p.name)}</div><div class="rating">${stars(p.rating)}</div><div class="meta">${playerWinText(p)} · Wait ${estimateWaitForPosition(i+1)}</div></div><div class="mini"><button onclick="moveUp(${i})">↑</button><button onclick="moveDown(${i})">↓</button><button class="danger" onclick="removePlayer(${i})">Remove</button></div></div>`).join(""):`<div class="player-card">No players waiting.</div>`}
-function renderCourts(){el("courtList").innerHTML=courts.map((c,i)=>`<section class="card"><div class="court-head"><input value="${escapeHtml(championshipLabel(c,i))}" onchange="renameCourt('${c.id}',this.value)"><div class="timer ${timerClass(c)}">${c.startedAt?formatTime(Date.now()-c.startedAt):"00:00"}</div></div><div class="court-grid"><div><h3>Team 1</h3><div class="team">${renderSlots(c,"teamOne")}</div></div><div class="vs">VS</div><div><h3>Team 2</h3><div class="team">${renderSlots(c,"teamTwo")}</div></div></div><div class="actions"><button onclick="loadNextFour('${c.id}')">Load</button><button class="green" onclick="finishGame('${c.id}','teamOne')">T1 Wins</button><button class="green" onclick="finishGame('${c.id}','teamTwo')">T2 Wins</button><button class="yellow" onclick="shuffleCourt('${c.id}')">Shuffle</button><button onclick="allFourOutNextFour('${c.id}')">Next</button><button class="danger" onclick="clearCourt('${c.id}')">Clear</button></div><div class="actions"><button class="danger" onclick="removeCourt('${c.id}')">Remove Court</button></div></section>`).join("")}
-function renderSlots(c,team){const s=[...c[team]];while(s.length<2)s.push(null);return s.map(p=>p?`<div class="player-card"><div class="photo" style="${photoStyle(p.photo)}"></div><div class="name">${escapeHtml(p.name)}</div><div class="rating">${stars(p.rating)}</div><div class="meta">${playerWinText(p)}</div><div class="mini"><button onclick="returnCourtPlayerToQueue('${c.id}','${team}','${p.id}')">Return</button><button onclick="replaceCourtPlayer('${c.id}','${team}','${p.id}')">Replace</button><button class="danger" onclick="removeCourtPlayerCompletely('${c.id}','${team}','${p.id}')">Remove</button></div></div>`:`<div class="player-card"><div class="photo"></div><div class="name">Empty</div></div>`).join("")}
+function renderCourts(){el("courtList").innerHTML=courts.map((c,i)=>`<section class="card"><div class="court-head"><input value="${escapeHtml(championshipLabel(c,i))}" onchange="renameCourt('${c.id}',this.value)"><div class="timer ${timerClass(c)}">${c.startedAt?formatTime(Date.now()-c.startedAt):"00:00"}</div></div><div class="court-grid"><div><h3>Team 1</h3><div class="team">${renderSlots(c,"teamOne")}</div></div><div class="vs">VS</div><div><h3>Team 2</h3><div class="team">${renderSlots(c,"teamTwo")}</div></div></div><div class="main-actions"><button class="green" onclick="finishGame('${c.id}','teamOne')">Team 1 Wins</button><button class="green" onclick="finishGame('${c.id}','teamTwo')">Team 2 Wins</button></div><div class="secondary-actions"><details class="court-menu"><summary>More Court Actions</summary><div class="menu-panel"><button onclick="loadNextFour('${c.id}')">Load Players</button><button onclick="allFourOutNextFour('${c.id}')">Next Game</button><button class="yellow" onclick="shuffleCourt('${c.id}')">Shuffle Teams</button><button class="danger" onclick="clearCourt('${c.id}')">Clear Court</button><button class="danger" onclick="removeCourt('${c.id}')">Remove Court</button></div></details></div></section>`).join("")}
+function renderSlots(c,team){const s=[...c[team]];while(s.length<2)s.push(null);return s.map(p=>p?`<div class="player-card"><div class="photo" style="${photoStyle(p.photo)}"></div><div class="name">${escapeHtml(p.name)}</div><div class="rating">${stars(p.rating)}</div><div class="meta">${playerWinText(p)}</div><details class="player-menu"><summary>Player Actions</summary><div class="menu-panel"><button onclick="returnCourtPlayerToQueue('${c.id}','${team}','${p.id}')">Return to Queue</button><button onclick="replaceCourtPlayer('${c.id}','${team}','${p.id}')">Replace Player</button><button class="danger" onclick="removeCourtPlayerCompletely('${c.id}','${team}','${p.id}')">Remove Player</button></div></details></div>`:`<div class="player-card"><div class="photo"></div><div class="name">Empty</div></div>`).join("")}
 function renderWinnerQueue(){el("winnerQueueCard").classList.toggle("hidden",!(courts.length>1&&el("rotationRule").value==="winnerVsWinner"));el("winnerQueue").innerHTML=winnerTeams.length?winnerTeams.map((t,i)=>`<div class="stat-card"><b>Winner Team ${i+1}</b><p>${t.players.map(p=>escapeHtml(p.name)).join(" / ")}</p></div>`).join(""):`<div class="stat-card">No winner teams waiting.</div>`}
 function renderStats(){const s=Object.values(playerStats).sort((a,b)=>b.wins-a.wins);el("statsList").innerHTML=s.length?s.map(x=>`<div class="stat-card"><b>${escapeHtml(x.name)} ${stars(x.rating)}</b><p>${x.games} games · ${x.wins}W/${x.losses}L · ${x.games?Math.round((x.wins/x.games)*100):0}% win · ${formatTime(x.timeMs)}</p></div>`).join(""):`<div class="stat-card">No stats yet.</div>`}
 function renderHistory(){el("historyList").innerHTML=courtHistory.length?courtHistory.map(h=>`<div class="history-card"><b>${escapeHtml(h.court)} · ${escapeHtml(h.time)}</b><p>Winner: ${h.winners.map(escapeHtml).join(" / ")||"None"}</p><p>Loser: ${h.losers.map(escapeHtml).join(" / ")||"None"} · ${formatTime(h.duration)}</p></div>`).join(""):`<div class="history-card">No court history yet.</div>`}
