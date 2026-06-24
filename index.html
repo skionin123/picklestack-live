@@ -1,548 +1,585 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>PickleStack Live</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PickleStack Live</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+* { box-sizing: border-box; }
 
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: #020617;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #020617;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-    body {
-      padding-bottom: 82px;
-    }
+body {
+  padding-bottom: 74px;
+}
 
-    body.score-mode {
-      padding-bottom: 0;
-      background: #000;
-      overflow: hidden;
-    }
+body.score-mode {
+  padding-bottom: 0;
+  background: #000;
+  overflow: hidden;
+}
 
-    .app {
-      max-width: 1500px;
-      margin: auto;
-      padding: 14px;
-    }
+.app {
+  max-width: 1500px;
+  margin: auto;
+  padding: 12px;
+}
 
-    body.score-mode .app {
-      max-width: none;
-      padding: 4px;
-    }
+body.score-mode .app {
+  max-width: none;
+  padding: 4px;
+}
 
-    h1 {
-      margin: 0;
-      font-size: clamp(34px, 7vw, 72px);
-      font-weight: 900;
-    }
+h1 {
+  margin: 0;
+  font-size: clamp(28px, 6vw, 58px);
+  font-weight: 900;
+}
 
-    h2 { margin-top: 0; }
-    p { color: #94a3b8; }
+h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
 
-    .card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 16px;
-    }
+h3 {
+  margin: 8px 0;
+  font-size: 16px;
+}
 
-    button, .photo-btn {
-      border: none;
-      border-radius: 12px;
-      padding: 13px 16px;
-      background: #2563eb;
-      color: white;
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-      text-align: center;
-    }
+p {
+  color: #94a3b8;
+  margin: 6px 0;
+  font-size: 14px;
+}
 
-    .green { background: #16a34a; }
-    .yellow { background: #facc15; color: #000; }
-    .danger { background: #991b1b; }
-    .dark { background: #111827; border: 1px solid #475569; }
+.card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
 
-    input, select {
-      width: 100%;
-      border: 1px solid #475569;
-      border-radius: 12px;
-      padding: 14px;
-      background: #020617;
-      color: white;
-      font-size: 18px;
-    }
+button, .photo-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: center;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
+.green { background: #16a34a; }
+.yellow { background: #facc15; color: #000; }
+.danger { background: #991b1b; }
+.dark { background: #111827; border: 1px solid #475569; }
 
-    .hidden { display: none !important; }
+input, select {
+  width: 100%;
+  border: 1px solid #475569;
+  border-radius: 10px;
+  padding: 11px;
+  background: #020617;
+  color: white;
+  font-size: 15px;
+}
 
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      background: #020617;
-      border-top: 1px solid #334155;
-      z-index: 100;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
 
-    body.score-mode .bottom-nav,
-    body.score-mode .normal-header,
-    body.score-mode .voice-status {
-      display: none;
-    }
+.hidden { display: none !important; }
 
-    .bottom-nav button {
-      border-radius: 0;
-      background: #020617;
-      border-right: 1px solid #1e293b;
-      font-size: 13px;
-      padding: 12px 4px;
-    }
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: #020617;
+  border-top: 1px solid #334155;
+  z-index: 100;
+}
 
-    .bottom-nav button.active {
-      background: #2563eb;
-    }
+body.score-mode .bottom-nav,
+body.score-mode .normal-header,
+body.score-mode .voice-status {
+  display: none;
+}
 
-    .scoreboard {
-      display: grid;
-      grid-template-columns: 1fr 1fr .85fr;
-      gap: 12px;
-      background: #050505;
-      border-radius: 18px;
-      padding: 18px;
-      min-height: 60vh;
-    }
+.bottom-nav button {
+  border-radius: 0;
+  background: #020617;
+  border-right: 1px solid #1e293b;
+  font-size: 12px;
+  padding: 10px 4px;
+}
 
-    body.score-mode .scoreboard {
-      min-height: calc(100vh - 58px);
-      border-radius: 8px;
-      padding: 8px;
-      gap: 6px;
-    }
+.bottom-nav button.active {
+  background: #2563eb;
+}
 
-    .score-column, .serve-column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-around;
-    }
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr .85fr;
+  gap: 10px;
+  background: #050505;
+  border-radius: 18px;
+  padding: 16px;
+  min-height: 60vh;
+}
 
-    .team-name, .game-label {
-      width: 95%;
-      background: transparent;
-      border: none;
-      color: white;
-      text-align: center;
-      font-size: clamp(34px, 5vw, 78px);
-      font-weight: 900;
-      outline: none;
-    }
+body.score-mode .scoreboard {
+  min-height: calc(100vh - 54px);
+  border-radius: 8px;
+  padding: 8px;
+  gap: 6px;
+}
 
-    .active-server {
-      color: #38bdf8;
-    }
+.score-column, .serve-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
 
-    .score-number {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: clamp(150px, 23vw, 430px);
-      font-weight: 900;
-      line-height: .9;
-    }
+.team-name, .game-label {
+  width: 95%;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: clamp(30px, 5vw, 70px);
+  font-weight: 900;
+  outline: none;
+}
 
-    .server-circle {
-      width: clamp(150px, 20vw, 320px);
-      height: clamp(150px, 20vw, 320px);
-      border-radius: 50%;
-      background: #ffe600;
-      color: #000;
-      font-size: clamp(105px, 15vw, 240px);
-      font-weight: 900;
-    }
+.active-server {
+  color: #38bdf8;
+}
 
-    .small-label {
-      color: #94a3b8;
-      font-weight: 900;
-    }
+.score-number {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: clamp(145px, 22vw, 420px);
+  font-weight: 900;
+  line-height: .9;
+}
 
-    .controls {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 8px;
-    }
+.server-circle {
+  width: clamp(145px, 19vw, 300px);
+  height: clamp(145px, 19vw, 300px);
+  border-radius: 50%;
+  background: #ffe600;
+  color: #000;
+  font-size: clamp(100px, 14vw, 220px);
+  font-weight: 900;
+}
 
-    body.score-mode .controls {
-      grid-template-columns: repeat(8, 1fr);
-      margin-top: 6px;
-      gap: 5px;
-    }
+.small-label {
+  color: #94a3b8;
+  font-weight: 900;
+  font-size: 14px;
+}
 
-    body.score-mode .controls button {
-      min-height: 38px;
-      font-size: 12px;
-      padding: 8px;
-    }
+.controls {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
 
-    .photo-preview {
-      margin-top: 12px;
-      width: 130px;
-      height: 130px;
-      border-radius: 18px;
-      background-size: cover;
-      background-position: center;
-      border: 3px solid #38bdf8;
-    }
+body.score-mode .controls {
+  margin-top: 5px;
+  gap: 5px;
+}
 
-    #cameraVideo {
-      width: 100%;
-      max-height: 420px;
-      border-radius: 18px;
-      background: #000;
-    }
+body.score-mode .controls button {
+  min-height: 36px;
+  font-size: 12px;
+  padding: 7px;
+}
 
-    .court-list, .queue-list, .history-list, .stats-list, .winner-list {
-      display: grid;
-      gap: 12px;
-    }
+.photo-preview {
+  margin-top: 10px;
+  width: 110px;
+  height: 110px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid #38bdf8;
+}
 
-    .court-header {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+#cameraVideo {
+  width: 100%;
+  max-height: 420px;
+  border-radius: 16px;
+  background: #000;
+}
 
-    .timer {
-      font-size: 24px;
-      font-weight: 900;
-      color: #22c55e;
-    }
+.court-list, .queue-list, .history-list, .stats-list, .winner-list {
+  display: grid;
+  gap: 10px;
+}
 
-    .timer.warn { color: #facc15; }
-    .timer.danger-time { color: #ef4444; }
+.court-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-    .court-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 12px;
-      align-items: center;
-    }
+.timer {
+  font-size: 20px;
+  font-weight: 900;
+  color: #22c55e;
+}
 
-    .vs {
-      color: #facc15;
-      font-size: clamp(34px, 6vw, 74px);
-      font-weight: 900;
-      text-align: center;
-    }
+.timer.warn { color: #facc15; }
+.timer.danger-time { color: #ef4444; }
 
-    .player-slots {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+.court-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
 
-    .player-card {
-      background: #020617;
-      border: 1px solid #475569;
-      border-radius: 18px;
-      padding: 10px;
-      text-align: center;
-    }
+.vs {
+  color: #facc15;
+  font-size: clamp(28px, 5vw, 64px);
+  font-weight: 900;
+  text-align: center;
+}
 
-    .player-photo, .queue-photo {
-      background: #1e293b;
-      background-size: cover;
-      background-position: center;
-    }
+.player-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
 
-    .player-photo {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 16px;
-      margin-bottom: 8px;
-    }
+.player-card {
+  background: #020617;
+  border: 1px solid #475569;
+  border-radius: 16px;
+  padding: 9px;
+  text-align: center;
+}
 
-    .queue-photo {
-      width: 66px;
-      height: 66px;
-      border-radius: 14px;
-    }
+.player-photo, .queue-photo {
+  background: #1e293b;
+  background-size: cover;
+  background-position: center;
+}
 
-    .player-name, .queue-name {
-      font-weight: 900;
-      font-size: 20px;
-      word-break: break-word;
-    }
+.player-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  margin-bottom: 7px;
+}
 
-    .queue-item {
-      display: grid;
-      grid-template-columns: 66px 1fr auto;
-      gap: 10px;
-      align-items: center;
-      background: #020617;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 10px;
-    }
+.queue-photo {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+}
 
-    .mini-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 8px;
-    }
+.player-name, .queue-name {
+  font-weight: 900;
+  font-size: 16px;
+  word-break: break-word;
+}
 
-    .mini-buttons button {
-      padding: 8px 10px;
-      font-size: 13px;
-    }
+.rating-line {
+  color: #facc15;
+  font-size: 13px;
+  font-weight: 800;
+}
 
-    .court-actions {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
-    }
+.meta-line {
+  color: #94a3b8;
+  font-size: 12px;
+}
 
-    .stat-card, .history-card {
-      background: #020617;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 12px;
-    }
+.queue-item {
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 9px;
+}
 
-    .voice-status {
-      text-align: center;
-      margin-top: 10px;
-      color: #38bdf8;
-    }
+.mini-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 7px;
+}
 
-    @media (max-width: 850px) {
-      .grid, .court-grid, .scoreboard {
-        grid-template-columns: 1fr;
-      }
+.mini-buttons button {
+  padding: 6px 8px;
+  font-size: 12px;
+}
 
-      .controls, .court-actions {
-        grid-template-columns: 1fr 1fr;
-      }
+.court-actions {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
 
-      .queue-item {
-        grid-template-columns: 60px 1fr;
-      }
+.stat-card, .history-card {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 10px;
+}
 
-      .queue-item .mini-buttons {
-        grid-column: 1 / -1;
-      }
+.voice-status {
+  text-align: center;
+  margin-top: 8px;
+  color: #38bdf8;
+  font-size: 13px;
+}
 
-      .score-number {
-        font-size: clamp(130px, 42vw, 260px);
-      }
+@media (max-width: 850px) {
+  .grid, .court-grid, .scoreboard {
+    grid-template-columns: 1fr;
+  }
 
-      .server-circle {
-        width: 170px;
-        height: 170px;
-        font-size: 125px;
-      }
-    }
+  .controls, .court-actions {
+    grid-template-columns: 1fr 1fr;
+  }
 
-    @media (orientation: landscape) and (max-height: 650px) {
-      body.score-mode .scoreboard {
-        grid-template-columns: 1fr 1fr .85fr;
-      }
+  .queue-item {
+    grid-template-columns: 58px 1fr;
+  }
 
-      body.score-mode .score-number {
-        font-size: clamp(145px, 24vw, 330px);
-      }
+  .queue-item .mini-buttons {
+    grid-column: 1 / -1;
+  }
 
-      body.score-mode .server-circle {
-        width: clamp(115px, 19vw, 220px);
-        height: clamp(115px, 19vw, 220px);
-        font-size: clamp(88px, 15vw, 170px);
-      }
+  .score-number {
+    font-size: clamp(125px, 40vw, 250px);
+  }
 
-      body.score-mode .team-name,
-      body.score-mode .game-label {
-        font-size: clamp(28px, 5vw, 54px);
-      }
-    }
-  </style>
+  .server-circle {
+    width: 160px;
+    height: 160px;
+    font-size: 115px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 650px) {
+  body.score-mode .scoreboard {
+    grid-template-columns: 1fr 1fr .85fr;
+  }
+
+  body.score-mode .score-number {
+    font-size: clamp(140px, 24vw, 320px);
+  }
+
+  body.score-mode .server-circle {
+    width: clamp(110px, 19vw, 210px);
+    height: clamp(110px, 19vw, 210px);
+    font-size: clamp(84px, 15vw, 160px);
+  }
+
+  body.score-mode .team-name,
+  body.score-mode .game-label {
+    font-size: clamp(26px, 5vw, 52px);
+  }
+}
+</style>
 </head>
 
 <body>
 <div class="app">
 
-  <section id="tabScore">
-    <div class="normal-header">
-      <h1>🏓 PickleStack Live</h1>
-      <p>Professional pickleball scoreboard, stack manager, court timer, and rotation tool.</p>
-    </div>
+<section id="tabScore">
+  <div class="normal-header">
+    <h1>🏓 PickleStack Live</h1>
+    <p>Professional pickleball scoreboard, player stack, ratings, court timers, and rotation tools.</p>
+  </div>
 
-    <main class="scoreboard">
-      <section class="score-column">
-        <input id="leftName" class="team-name active-server" value="Team A">
-        <button id="leftScore" class="score-number" onclick="addPointServing()">0</button>
-        <div class="small-label">Serving Team</div>
-      </section>
-
-      <section class="score-column">
-        <input id="rightName" class="team-name" value="Team B">
-        <button id="rightScore" class="score-number" onclick="addPointReceiving()">0</button>
-        <div class="small-label">Receiving Team</div>
-      </section>
-
-      <section class="serve-column">
-        <input id="gameInput" class="game-label" value="Game 1">
-        <button id="serverNumber" class="server-circle" onclick="secondServe()">2</button>
-        <div class="small-label">Serve</div>
-      </section>
-    </main>
-
-    <section class="controls">
-      <button onclick="addPointServing()">Point</button>
-      <button onclick="secondServe()">2nd Serve</button>
-      <button onclick="sideOut()">Side Out</button>
-      <button onclick="undoScore()">Undo</button>
-      <button onclick="speakScore()">Speaker</button>
-      <button onclick="toggleScoreMode()" id="landscapeButton">Landscape</button>
-      <button onclick="startVoice()">Voice</button>
-      <button class="danger" onclick="resetScore()">Reset</button>
+  <main class="scoreboard">
+    <section class="score-column">
+      <input id="leftName" class="team-name active-server" value="Team A">
+      <button id="leftScore" class="score-number" onclick="addPointServing()">0</button>
+      <div class="small-label">Serving Team</div>
     </section>
 
-    <div class="voice-status">
-      Voice: <span id="voiceStatus">Off</span> · <span id="lastCommand">Say “point”, “second serve”, “side out”, “undo”, or “reset”.</span>
-    </div>
+    <section class="score-column">
+      <input id="rightName" class="team-name" value="Team B">
+      <button id="rightScore" class="score-number" onclick="addPointReceiving()">0</button>
+      <div class="small-label">Receiving Team</div>
+    </section>
+
+    <section class="serve-column">
+      <input id="gameInput" class="game-label" value="Game 1">
+      <button id="serverNumber" class="server-circle" onclick="secondServe()">2</button>
+      <div class="small-label">Serve</div>
+    </section>
+  </main>
+
+  <section class="controls">
+    <button onclick="addPointServing()">Point</button>
+    <button onclick="secondServe()">2nd Serve</button>
+    <button onclick="sideOut()">Side Out</button>
+    <button onclick="undoScore()">Undo</button>
+    <button onclick="speakScore()">Speaker</button>
+    <button onclick="toggleScoreMode()" id="landscapeButton">Landscape</button>
+    <button onclick="startVoice()">Voice</button>
+    <button class="danger" onclick="resetScore()">Reset</button>
   </section>
 
-  <section id="tabCourts" class="hidden">
-    <div class="card">
-      <h1>Courts</h1>
-      <p id="waitEstimate">Estimated wait: Add players and courts to calculate.</p>
-      <div class="grid">
-        <button class="green" onclick="addCourt()">+ Add Court</button>
-        <button class="yellow" onclick="shuffleQueue()">Shuffle Queue</button>
-        <button onclick="loadAllEmptyCourts()">Load Empty Courts</button>
-        <button class="danger" onclick="resetAll()">Reset All</button>
-      </div>
+  <div class="voice-status">
+    Voice: <span id="voiceStatus">Off</span> · <span id="lastCommand">Say “point”, “second serve”, “side out”, “undo”, or “reset”.</span>
+  </div>
+</section>
+
+<section id="tabCourts" class="hidden">
+  <div class="card">
+    <h1>Courts</h1>
+    <p id="waitEstimate">Estimated wait: Add players and courts to calculate.</p>
+    <div class="grid">
+      <button class="green" onclick="addCourt()">+ Court</button>
+      <button class="yellow" onclick="shuffleQueue()">Shuffle Queue</button>
+      <button onclick="loadAllEmptyCourts()">Load Empty</button>
+      <button onclick="balanceWaitingQueue()">Balance Queue</button>
+      <button class="danger" onclick="resetAll()">Reset All</button>
     </div>
+  </div>
 
-    <div id="winnerQueueCard" class="card hidden">
-      <h2>Winner Queue</h2>
-      <p>Winner teams wait here for Winner vs Winner mode.</p>
-      <div id="winnerQueue" class="winner-list"></div>
-    </div>
+  <div id="winnerQueueCard" class="card hidden">
+    <h2>Winner Queue</h2>
+    <p>Winner teams wait here for Winner vs Winner mode.</p>
+    <div id="winnerQueue" class="winner-list"></div>
+  </div>
 
-    <div id="courtList" class="court-list"></div>
-  </section>
+  <div id="courtList" class="court-list"></div>
+</section>
 
-  <section id="tabStack" class="hidden">
-    <section class="card">
-      <h1>Add Player</h1>
-      <div class="grid">
-        <input id="playerNameInput" placeholder="Player name">
-        <label class="photo-btn">
-          Upload Photo
-          <input id="photoInput" type="file" accept="image/*" hidden>
-        </label>
-        <button onclick="openCamera()">Take Picture</button>
-        <button class="green" onclick="addPlayer()">Join Stack</button>
-      </div>
-      <div id="photoPreview" class="photo-preview hidden"></div>
-    </section>
+<section id="tabStack" class="hidden">
+  <section class="card">
+    <h1>Add Player</h1>
+    <div class="grid">
+      <input id="playerNameInput" placeholder="Player name">
 
-    <section id="cameraPanel" class="card hidden">
-      <h2>Take Player Picture</h2>
-      <video id="cameraVideo" autoplay playsinline></video>
-      <div class="grid" style="margin-top:10px;">
-        <button class="green" onclick="capturePhoto()">Use Photo</button>
-        <button onclick="flipCamera()">Flip Camera</button>
-        <button class="danger" onclick="closeCamera()">Close</button>
-      </div>
-      <canvas id="cameraCanvas" hidden></canvas>
-    </section>
-
-    <section class="card">
-      <h2>Waiting Stack</h2>
-      <p>Next players are at the top.</p>
-      <div class="grid" style="margin-bottom:12px;">
-        <button class="yellow" onclick="shuffleQueue()">Shuffle Stack</button>
-        <button onclick="loadAllEmptyCourts()">Load Empty Courts</button>
-        <button class="green" onclick="addCourt()">Add Court</button>
-        <button class="danger" onclick="clearWaitingQueue()">Clear Waiting</button>
-      </div>
-      <div id="queueList" class="queue-list"></div>
-    </section>
-  </section>
-
-  <section id="tabStats" class="hidden">
-    <section class="card">
-      <h1>Stats & History</h1>
-      <p>Tracks wins, losses, games played, and court history on this device.</p>
-    </section>
-
-    <section class="card">
-      <h2>Player Stats</h2>
-      <div id="statsList" class="stats-list"></div>
-    </section>
-
-    <section class="card">
-      <h2>Court History</h2>
-      <div id="historyList" class="history-list"></div>
-    </section>
-  </section>
-
-  <section id="tabSettings" class="hidden">
-    <section class="card">
-      <h1>Settings</h1>
-
-      <label>Rotation Style</label>
-      <select id="rotationRule" onchange="saveSettings()">
-        <option value="king">1 Court: King of Court</option>
-        <option value="split">1 Court: Winners Split</option>
-        <option value="all">All 4 Rotate / Next 4 Players</option>
-        <option value="winnerVsWinner">2+ Courts: Winner vs Winner</option>
+      <select id="playerRatingInput">
+        <option value="1">⭐ Beginner</option>
+        <option value="2">⭐⭐ Recreational</option>
+        <option value="3" selected>⭐⭐⭐ Intermediate</option>
+        <option value="4">⭐⭐⭐⭐ Advanced</option>
+        <option value="5">⭐⭐⭐⭐⭐ Competitive</option>
       </select>
 
-      <p id="ruleDescription"></p>
-
-      <label>Average game length for wait estimate</label>
-      <select id="averageGameMinutes" onchange="saveSettings()">
-        <option value="10">10 minutes</option>
-        <option value="12">12 minutes</option>
-        <option value="15">15 minutes</option>
-        <option value="20">20 minutes</option>
-      </select>
-
-      <br><br>
-
-      <label>
-        <input id="championshipMode" type="checkbox" onchange="saveSettings()" style="width:auto;">
-        Make Court 1 Championship Court
+      <label class="photo-btn">
+        Upload
+        <input id="photoInput" type="file" accept="image/*" hidden>
       </label>
 
-      <p>App Store / Android Store packaging comes after testing this web version.</p>
-    </section>
+      <button onclick="openCamera()">Take Photo</button>
+      <button class="green" onclick="addPlayer()">Join</button>
+    </div>
+    <div id="photoPreview" class="photo-preview hidden"></div>
   </section>
+
+  <section id="cameraPanel" class="card hidden">
+    <h2>Take Player Picture</h2>
+    <video id="cameraVideo" autoplay playsinline></video>
+    <div class="grid" style="margin-top:10px;">
+      <button class="green" onclick="capturePhoto()">Use Photo</button>
+      <button onclick="flipCamera()">Flip</button>
+      <button class="danger" onclick="closeCamera()">Close</button>
+    </div>
+    <canvas id="cameraCanvas" hidden></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Waiting Stack</h2>
+    <p>Ratings help balance games. Win rate updates after games are recorded.</p>
+    <div class="grid" style="margin-bottom:12px;">
+      <button class="yellow" onclick="shuffleQueue()">Shuffle</button>
+      <button onclick="balanceWaitingQueue()">Balance</button>
+      <button onclick="loadAllEmptyCourts()">Load Empty</button>
+      <button class="green" onclick="addCourt()">Add Court</button>
+      <button class="danger" onclick="clearWaitingQueue()">Clear</button>
+    </div>
+    <div id="queueList" class="queue-list"></div>
+  </section>
+</section>
+
+<section id="tabStats" class="hidden">
+  <section class="card">
+    <h1>Stats</h1>
+    <p>Tracks wins, losses, win rate, games played, time played, and rating.</p>
+  </section>
+
+  <section class="card">
+    <h2>Player Stats</h2>
+    <div id="statsList" class="stats-list"></div>
+  </section>
+
+  <section class="card">
+    <h2>Court History</h2>
+    <div id="historyList" class="history-list"></div>
+  </section>
+</section>
+
+<section id="tabSettings" class="hidden">
+  <section class="card">
+    <h1>Settings</h1>
+
+    <label>Rotation Style</label>
+    <select id="rotationRule" onchange="saveSettings()">
+      <option value="king">King of Court</option>
+      <option value="split">Winners Split</option>
+      <option value="all">All 4 Rotate / Next 4</option>
+      <option value="winnerVsWinner">2+ Courts: Winner vs Winner</option>
+    </select>
+
+    <p id="ruleDescription"></p>
+
+    <label>Average game length</label>
+    <select id="averageGameMinutes" onchange="saveSettings()">
+      <option value="10">10 minutes</option>
+      <option value="12">12 minutes</option>
+      <option value="15">15 minutes</option>
+      <option value="20">20 minutes</option>
+    </select>
+
+    <br><br>
+
+    <label>
+      <input id="championshipMode" type="checkbox" onchange="saveSettings()" style="width:auto;">
+      Make Court 1 Championship Court
+    </label>
+
+    <p>After testing, this can be packaged for Android and iPhone using Capacitor.</p>
+  </section>
+</section>
 
 </div>
 
@@ -602,13 +639,14 @@ function showTab(name) {
 function toggleScoreMode() {
   if (document.body.classList.contains("score-mode")) {
     exitScoreMode();
-  } else {
-    showTab("Score");
-    document.body.classList.add("score-mode");
-    landscapeButton.textContent = "Exit";
-    document.documentElement.requestFullscreen?.().catch?.(() => {});
-    screen.orientation?.lock?.("landscape").catch(() => {});
+    return;
   }
+
+  showTab("Score");
+  document.body.classList.add("score-mode");
+  landscapeButton.textContent = "Exit";
+  document.documentElement.requestFullscreen?.().catch?.(() => {});
+  screen.orientation?.lock?.("landscape").catch(() => {});
 }
 
 function exitScoreMode() {
@@ -640,7 +678,7 @@ function addCourt() {
 }
 
 function removeCourt(id) {
-  if (!confirm("Remove this court? Players on court return to waiting stack.")) return;
+  if (!confirm("Remove this court? Players return to waiting stack.")) return;
   const court = courts.find(c => c.id === id);
   if (court) players.push(...court.teamOne, ...court.teamTwo);
   courts = courts.filter(c => c.id !== id);
@@ -653,11 +691,20 @@ function addPlayer() {
   const name = playerNameInput.value.trim();
   if (!name) return alert("Enter player name.");
 
-  const player = { id: makeId(), name, photo: selectedPhotoData || "" };
+  const rating = Number(playerRatingInput.value || 3);
+
+  const player = {
+    id: makeId(),
+    name,
+    rating,
+    photo: selectedPhotoData || ""
+  };
+
   players.push(player);
   ensureStats(player);
 
   playerNameInput.value = "";
+  playerRatingInput.value = "3";
   selectedPhotoData = "";
   photoInput.value = "";
   showPhotoPreview("");
@@ -671,7 +718,7 @@ function loadNextFour(courtId) {
   if (!court) return;
 
   if (court.teamOne.length || court.teamTwo.length) {
-    return alert("Court already has players. Use Team Wins, All 4 Out / Next 4, or Clear Court first.");
+    return alert("Court already has players. Use Team Wins, All 4 Out, or Clear Court first.");
   }
 
   loadFourIntoCourt(court);
@@ -792,6 +839,7 @@ function ensureStats(player) {
     playerStats[player.id] = {
       id: player.id,
       name: player.name,
+      rating: player.rating || 3,
       photo: player.photo,
       wins: 0,
       losses: 0,
@@ -800,6 +848,7 @@ function ensureStats(player) {
     };
   } else {
     playerStats[player.id].name = player.name;
+    playerStats[player.id].rating = player.rating || playerStats[player.id].rating || 3;
     playerStats[player.id].photo = player.photo;
   }
 }
@@ -868,6 +917,12 @@ function shuffleQueue() {
   renderAll();
 }
 
+function balanceWaitingQueue() {
+  players.sort((a, b) => Number(b.rating || 3) - Number(a.rating || 3));
+  saveState();
+  renderAll();
+}
+
 function clearWaitingQueue() {
   if (!confirm("Clear all waiting players?")) return;
   players = [];
@@ -926,7 +981,8 @@ function renderQueue() {
       <div class="queue-photo" style="${photoStyle(p.photo)}"></div>
       <div>
         <div class="queue-name">${i + 1}. ${escapeHtml(p.name)}</div>
-        <p>Estimated wait: ${estimateWaitForPosition(i + 1)}</p>
+        <div class="rating-line">${stars(p.rating)} · ${ratingLabel(p.rating)}</div>
+        <div class="meta-line">${playerWinText(p)} · Wait: ${estimateWaitForPosition(i + 1)}</div>
       </div>
       <div class="mini-buttons">
         <button onclick="moveUp(${i})">▲</button>
@@ -958,11 +1014,11 @@ function renderCourts() {
       </div>
 
       <div class="court-actions">
-        <button onclick="loadNextFour('${court.id}')">Load Next 4</button>
-        <button class="green" onclick="finishGame('${court.id}', 'teamOne')">Team 1 Wins</button>
-        <button class="green" onclick="finishGame('${court.id}', 'teamTwo')">Team 2 Wins</button>
-        <button class="yellow" onclick="shuffleCourt('${court.id}')">Shuffle Court</button>
-        <button onclick="allFourOutNextFour('${court.id}')">All 4 Out / Next 4</button>
+        <button onclick="loadNextFour('${court.id}')">Load 4</button>
+        <button class="green" onclick="finishGame('${court.id}', 'teamOne')">T1 Wins</button>
+        <button class="green" onclick="finishGame('${court.id}', 'teamTwo')">T2 Wins</button>
+        <button class="yellow" onclick="shuffleCourt('${court.id}')">Shuffle</button>
+        <button onclick="allFourOutNextFour('${court.id}')">Next 4</button>
         <button class="danger" onclick="clearCourt('${court.id}')">Clear</button>
       </div>
 
@@ -986,6 +1042,8 @@ function renderSlots(court, teamKey) {
       <div class="player-card">
         <div class="player-photo" style="${photoStyle(p.photo)}"></div>
         <div class="player-name">${escapeHtml(p.name)}</div>
+        <div class="rating-line">${stars(p.rating)}</div>
+        <div class="meta-line">${ratingLabel(p.rating)}</div>
         <div class="mini-buttons">
           <button onclick="returnCourtPlayerToQueue('${court.id}', '${teamKey}', '${p.id}')">Return</button>
           <button onclick="replaceCourtPlayer('${court.id}', '${teamKey}', '${p.id}')">Replace</button>
@@ -1022,8 +1080,8 @@ function renderStats() {
 
   statsList.innerHTML = stats.map(s => `
     <div class="stat-card">
-      <strong>${escapeHtml(s.name)}</strong>
-      <p>Games: ${s.games} · Wins: ${s.wins} · Losses: ${s.losses} · Win Rate: ${s.games ? Math.round((s.wins / s.games) * 100) : 0}% · Time: ${formatTime(s.timeMs)}</p>
+      <strong>${escapeHtml(s.name)} ${stars(s.rating)}</strong>
+      <p>${ratingLabel(s.rating)} · Games: ${s.games} · Wins: ${s.wins} · Losses: ${s.losses} · Win Rate: ${s.games ? Math.round((s.wins / s.games) * 100) : 0}% · Time: ${formatTime(s.timeMs)}</p>
     </div>
   `).join("");
 }
@@ -1044,6 +1102,33 @@ function renderHistory() {
   `).join("");
 }
 
+function stars(rating) {
+  const count = Number(rating || 3);
+  return "★".repeat(count) + "☆".repeat(5 - count);
+}
+
+function ratingLabel(rating) {
+  const labels = {
+    1: "Beginner",
+    2: "Recreational",
+    3: "Intermediate",
+    4: "Advanced",
+    5: "Competitive"
+  };
+  return labels[Number(rating || 3)] || "Intermediate";
+}
+
+function playerWinText(player) {
+  const stats = playerStats[player.id];
+
+  if (!stats || !stats.games) {
+    return "No games yet";
+  }
+
+  const rate = Math.round((stats.wins / stats.games) * 100);
+  return `${rate}% win · ${stats.wins}W/${stats.losses}L`;
+}
+
 function renderWaitEstimate() {
   const activeCourts = Math.max(courts.length, 1);
   const avg = Number(averageGameMinutes?.value || 12);
@@ -1051,7 +1136,7 @@ function renderWaitEstimate() {
   const estimated = Math.ceil(groupsAhead / activeCourts) * avg;
 
   waitEstimate.textContent = players.length
-    ? `Estimated wait for last player: about ${estimated} minutes · ${players.length} waiting · ${activeCourts} court(s)`
+    ? `Estimated wait for last player: about ${estimated} min · ${players.length} waiting · ${activeCourts} court(s)`
     : `Estimated wait: No players waiting.`;
 }
 
