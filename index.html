@@ -1,78 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>PickleStack Live</title>
 <style>
 :root{
-  --bg:#f6f8fb; --card:#ffffff; --text:#132033; --muted:#64748b; --line:#dbe4ef;
-  --green:#5fbf3f; --blue:#2563eb; --yellow:#f6c343; --red:#dc2626; --nav:#0f172a;
+  --bg:#070a12;
+  --bg2:#0c1220;
+  --surface:rgba(20,28,45,.86);
+  --surface2:rgba(31,42,65,.82);
+  --card:#121a2b;
+  --line:rgba(148,163,184,.18);
+  --line2:rgba(255,255,255,.08);
+  --text:#f8fafc;
+  --muted:#9aa8bd;
+  --lime:#b7ff2a;
+  --lime2:#7ddc20;
+  --cyan:#38d5ff;
+  --blue:#4f7cff;
+  --yellow:#ffd166;
+  --red:#ff4d5e;
+  --purple:#9b5cff;
+  --shadow:0 24px 60px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
-body{padding-bottom:76px}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:
+    radial-gradient(circle at top left, rgba(183,255,42,.14), transparent 30%),
+    radial-gradient(circle at 80% 0%, rgba(56,213,255,.12), transparent 28%),
+    linear-gradient(180deg,#070a12 0%,#0a1020 50%,#070a12 100%);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+body{padding-bottom:82px}
 body.score-mode{padding-bottom:0;background:#000;overflow:hidden}
-.app{max-width:1120px;margin:auto;padding:14px}
-h1{margin:0;font-size:28px;font-weight:900;letter-spacing:-.04em}
-h2{margin:0 0 10px;font-size:18px}
-h3{margin:8px 0;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-p{margin:5px 0;color:var(--muted);font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 8px 24px rgba(15,23,42,.07)}
-button,.photo-btn{border:0;border-radius:999px;padding:10px 13px;font-size:13px;font-weight:800;background:var(--blue);color:white;cursor:pointer;text-align:center}
+.app{max-width:1180px;margin:auto;padding:16px}
+h1{margin:0;font-size:30px;font-weight:950;letter-spacing:-.05em;line-height:1}
+h2{margin:0 0 12px;font-size:18px;font-weight:900;letter-spacing:-.02em}
+h3{margin:10px 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:900}
+p{margin:6px 0;color:var(--muted);font-size:13px;line-height:1.45}
+.card{
+  background:linear-gradient(180deg,rgba(18,26,43,.94),rgba(13,19,32,.94));
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+}
+.hero{
+  background:
+    linear-gradient(135deg,rgba(183,255,42,.16),rgba(56,213,255,.07) 38%,rgba(18,26,43,.96) 70%),
+    linear-gradient(180deg,rgba(18,26,43,.98),rgba(8,12,20,.96));
+  border:1px solid rgba(183,255,42,.20);
+  position:relative;
+  overflow:hidden;
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:210px;
+  height:210px;
+  right:-70px;
+  top:-70px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(183,255,42,.20),transparent 67%);
+  pointer-events:none;
+}
+.hero p,.hero .muted{color:#b9c6d8}
+button,.photo-btn{
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:11px 14px;
+  font-size:13px;
+  font-weight:900;
+  background:linear-gradient(180deg,#24324f,#172238);
+  color:white;
+  cursor:pointer;
+  text-align:center;
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+}
+button:hover{filter:brightness(1.08)}
 button:active{transform:scale(.98)}
-.green{background:var(--green)} .yellow{background:var(--yellow);color:#1f2937}.danger{background:var(--red)}.soft{background:#eaf1ff;color:#1d4ed8}.dark{background:#162033}
-input,select{width:100%;border:1px solid var(--line);border-radius:14px;padding:11px;background:white;color:var(--text);font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.primary{background:linear-gradient(180deg,var(--lime),var(--lime2));color:#081108;border-color:rgba(183,255,42,.5)}
+.green{background:linear-gradient(180deg,#31d15f,#179440);color:white}
+.blue{background:linear-gradient(180deg,#5b86ff,#315bd6)}
+.yellow{background:linear-gradient(180deg,#ffdc73,#f4b61e);color:#151515}
+.danger{background:linear-gradient(180deg,#ff5f70,#c91f33)}
+.soft{background:rgba(183,255,42,.12);color:var(--lime);border:1px solid rgba(183,255,42,.22)}
+.ghost{background:rgba(255,255,255,.045);color:var(--text);border:1px solid var(--line)}
+input,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px 13px;
+  background:rgba(8,12,20,.76);
+  color:var(--text);
+  font-size:14px;
+  outline:0;
+}
+input:focus,select:focus{border-color:rgba(183,255,42,.55);box-shadow:0 0 0 3px rgba(183,255,42,.12)}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
 .hidden{display:none!important}
-.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.metric{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.metric b{font-size:22px}.metric span{display:block;font-size:12px;color:var(--muted)}
-.nav{position:fixed;left:0;right:0;bottom:0;background:var(--nav);display:grid;grid-template-columns:repeat(5,1fr);z-index:50}
-.nav button{border-radius:0;background:transparent;color:#94a3b8;padding:11px 4px;font-size:12px}.nav button.active{color:white;background:#1e293b}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(183,255,42,.12);
+  color:var(--lime);
+  border:1px solid rgba(183,255,42,.24);
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:950;
+}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.metric{
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--line2);
+  border-radius:20px;
+  padding:12px;
+}
+.metric b{font-size:26px;display:block;letter-spacing:-.03em}
+.metric span{font-size:12px;color:#b9c6d8;font-weight:700}
+.nav{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:10px;
+  background:rgba(7,10,18,.90);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:50;
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 18px 40px rgba(0,0,0,.40);
+  backdrop-filter:blur(18px);
+}
+.nav button{
+  border-radius:0;
+  border:0;
+  background:transparent;
+  color:#8b9ab1;
+  padding:12px 4px;
+  font-size:12px;
+  box-shadow:none;
+}
+.nav button.active{
+  color:var(--lime);
+  background:rgba(183,255,42,.10);
+}
 body.score-mode .nav,body.score-mode .normal-header,body.score-mode .voice-status{display:none}
 
-.scoreboard{display:grid;grid-template-columns:1fr 1fr .8fr;gap:10px;background:#000;border-radius:20px;padding:14px;min-height:58vh}
+.scoreboard{
+  display:grid;
+  grid-template-columns:1fr 1fr .8fr;
+  gap:10px;
+  background:
+    radial-gradient(circle at center,rgba(56,213,255,.07),transparent 55%),
+    #000;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:28px;
+  padding:14px;
+  min-height:58vh;
+  box-shadow:0 22px 70px rgba(0,0,0,.50);
+}
 body.score-mode .app{max-width:none;padding:4px}
 body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
 .score-column,.serve-column{display:flex;flex-direction:column;align-items:center;justify-content:space-around}
-.team-name,.game-label{width:96%;background:transparent;border:0;color:white;text-align:center;font-size:clamp(30px,5vw,70px);font-weight:900}
-.active-server{color:#38bdf8}
-.score-number{width:100%;background:transparent;border:0;color:white;font-size:clamp(130px,22vw,390px);font-weight:900;line-height:.9}
-.server-circle{width:clamp(130px,18vw,280px);height:clamp(130px,18vw,280px);border-radius:50%;background:#ffe600;color:#000;font-size:clamp(90px,13vw,205px);font-weight:900}
-.small-label{font-size:12px;color:#94a3b8;font-weight:800}
-.controls{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:8px}
+.team-name,.game-label{
+  width:96%;
+  background:transparent;
+  border:0;
+  color:white;
+  text-align:center;
+  font-size:clamp(30px,5vw,70px);
+  font-weight:950;
+}
+.active-server{color:var(--cyan)}
+.score-number{
+  width:100%;
+  background:transparent;
+  border:0;
+  color:white;
+  font-size:clamp(130px,22vw,390px);
+  font-weight:950;
+  line-height:.9;
+  text-shadow:0 0 28px rgba(255,255,255,.13);
+}
+.server-circle{
+  width:clamp(130px,18vw,280px);
+  height:clamp(130px,18vw,280px);
+  border-radius:50%;
+  background:linear-gradient(180deg,#fff36a,#ffd600);
+  color:#000;
+  font-size:clamp(90px,13vw,205px);
+  font-weight:950;
+}
+.small-label{font-size:12px;color:#94a3b8;font-weight:900}
+.controls{display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin-top:9px}
 
-.list{display:grid;gap:8px}
-.row{display:grid;grid-template-columns:48px 1fr auto;gap:9px;align-items:center;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:8px}
-.avatar{width:48px;height:48px;border-radius:14px;background:#dbe4ef;background-size:cover;background-position:center}
-.name{font-weight:900;font-size:14px}.rating{font-size:12px;color:#b7791f;font-weight:900}.meta{font-size:12px;color:var(--muted)}
-.mini{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.mini button{font-size:11px;padding:6px 8px}
+.list{display:grid;gap:9px}
+.row{
+  display:grid;
+  grid-template-columns:50px 1fr auto;
+  gap:10px;
+  align-items:center;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:9px;
+}
+.avatar{
+  width:50px;
+  height:50px;
+  border-radius:16px;
+  background:#24324f;
+  background-size:cover;
+  background-position:center;
+}
+.name{font-weight:950;font-size:14px;color:var(--text)}
+.rating{font-size:12px;color:var(--yellow);font-weight:950}
+.meta{font-size:12px;color:var(--muted)}
+.mini{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.mini button{font-size:11px;padding:6px 8px;border-radius:12px}
 
-.court-head{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:10px}
-.timer{font-size:18px;font-weight:900;color:var(--green)}.timer.warn{color:#d97706}.timer.hot{color:var(--red)}
+.court-head{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:12px}
+.timer{font-size:18px;font-weight:950;color:var(--lime)}
+.timer.warn{color:var(--yellow)}
+.timer.hot{color:var(--red)}
 .court-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
-.team{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vs{font-size:28px;color:#d97706;font-weight:900}
-.player-card{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:8px;text-align:center;min-height:88px}
-.photo{width:100%;aspect-ratio:1/1;border-radius:14px;background:#dbe4ef;background-size:cover;background-position:center;margin-bottom:6px}
-.actions{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
+.team{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.vs{font-size:28px;color:var(--yellow);font-weight:950;text-align:center}
+.player-card{
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:9px;
+  text-align:center;
+  min-height:88px;
+}
+.photo{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:17px;
+  background:#24324f;
+  background-size:cover;
+  background-position:center;
+  margin-bottom:7px;
+}
+.actions{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:11px}
 
-.builder-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.dropbox{min-height:155px;background:#f8fafc;border:1px dashed #94a3b8;border-radius:16px;padding:8px}
-.builder-player{background:white;border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:7px;cursor:grab}
+.builder-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.dropbox{
+  min-height:155px;
+  background:rgba(255,255,255,.04);
+  border:1px dashed rgba(148,163,184,.35);
+  border-radius:20px;
+  padding:9px;
+}
+.builder-player{
+  background:rgba(255,255,255,.075);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:9px;
+  margin-bottom:8px;
+  cursor:grab;
+}
 .builder-player small{display:block;color:var(--muted);margin-top:2px}
-.builder-player .quick{display:flex;gap:5px;margin-top:7px}.builder-player .quick button{font-size:11px;padding:5px 8px}
-.builder-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}
-.photo-preview{margin-top:10px;width:90px;height:90px;border-radius:18px;background-size:cover;background-position:center;border:2px solid #38bdf8}
-#cameraVideo{width:100%;max-height:420px;border-radius:16px;background:#000}
-.voice-status{text-align:center;color:#2563eb;font-size:12px;margin-top:8px}
-
-.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#0f172a;color:white;border-radius:999px;padding:10px 14px;font-size:13px;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.builder-player .quick{display:flex;gap:5px;margin-top:8px}
+.builder-player .quick button{font-size:11px;padding:5px 8px;border-radius:12px}
+.builder-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:11px}
+.photo-preview{
+  margin-top:10px;
+  width:92px;
+  height:92px;
+  border-radius:22px;
+  background-size:cover;
+  background-position:center;
+  border:2px solid var(--lime);
+}
+#cameraVideo{width:100%;max-height:420px;border-radius:22px;background:#000}
+.voice-status{text-align:center;color:var(--cyan);font-size:12px;margin-top:8px}
+.stat-card,.history-card{
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:12px;
+}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:96px;
+  transform:translateX(-50%);
+  background:var(--lime);
+  color:#081108;
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:13px;
+  font-weight:900;
+  z-index:100;
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
 @media(max-width:780px){
+  .app{padding:12px}
   .grid,.metrics,.scoreboard,.court-grid,.builder-grid,.builder-actions{grid-template-columns:1fr}
   .controls,.actions{grid-template-columns:1fr 1fr}
-  .row{grid-template-columns:48px 1fr}.row .mini{grid-column:1/-1;justify-content:flex-start}
-  .score-number{font-size:clamp(120px,40vw,230px)}.server-circle{width:150px;height:150px;font-size:108px}
+  .row{grid-template-columns:50px 1fr}
+  .row .mini{grid-column:1/-1;justify-content:flex-start}
+  .score-number{font-size:clamp(120px,40vw,230px)}
+  .server-circle{width:150px;height:150px;font-size:108px}
 }
 @media(orientation:landscape) and (max-height:650px){
   body.score-mode .scoreboard{grid-template-columns:1fr 1fr .8fr}
@@ -85,9 +327,13 @@ body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
 <div class="app">
 
 <section id="tabScore">
-  <div class="normal-header card">
+  <div class="normal-header card hero">
     <div class="top">
-      <div><h1>PickleStack Live</h1><p>Friendly pickleball stack, courts, photos, and score calls.</p></div>
+      <div>
+        <span class="badge">🏓 Pro Court Manager</span>
+        <h1 style="margin-top:10px">PickleStack Live</h1>
+        <p>Premium court queue, smart match loading, and live score calls.</p>
+      </div>
     </div>
     <div class="metrics">
       <div class="metric"><b id="homeWaiting">0</b><span>Waiting</span></div>
@@ -119,7 +365,7 @@ body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
     <button onclick="secondServe()">2nd</button>
     <button onclick="sideOut()">Side Out</button>
     <button onclick="undoScore()">Undo</button>
-    <button onclick="speakScore(true)">Speaker</button>
+    <button onclick="speakScore(true)" class="primary">Speaker</button>
     <button onclick="toggleScoreMode()" id="landscapeButton">Display</button>
     <button onclick="startVoice()">Voice</button>
     <button class="danger" onclick="resetScore()">Reset</button>
@@ -128,10 +374,10 @@ body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
 </section>
 
 <section id="tabCourts" class="hidden">
-  <div class="card">
+  <div class="card hero">
     <div class="top"><div><h1>Courts</h1><p id="waitEstimate">No players waiting.</p></div></div>
-    <div class="grid">
-      <button class="green" onclick="addCourt()">+ Court</button>
+    <div class="grid" style="margin-top:12px">
+      <button class="primary" onclick="addCourt()">+ Court</button>
       <button class="yellow" onclick="shuffleQueue()">Shuffle Queue</button>
       <button onclick="loadAllEmptyCourts()">Load Empty</button>
       <button onclick="sortWaitingByRating()">Sort Rating</button>
@@ -141,7 +387,7 @@ body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
 
   <div id="teamBuilderCard" class="card hidden">
     <h2>Build Teams</h2>
-    <p>Use T1/T2 buttons or drag players. Then tap Start.</p>
+    <p>Use T1/T2 buttons on mobile or drag players on desktop. Then tap Start.</p>
     <div class="builder-grid">
       <div><h3>Available</h3><div id="builderPool" class="dropbox" ondragover="allowDrop(event)" ondrop="dropBuilderPlayer(event,'pool')"></div></div>
       <div><h3>Team 1</h3><div id="builderTeamOne" class="dropbox" ondragover="allowDrop(event)" ondrop="dropBuilderPlayer(event,'teamOne')"></div></div>
@@ -205,7 +451,7 @@ body.score-mode .scoreboard{min-height:calc(100vh - 50px);border-radius:8px}
 </section>
 
 <section id="tabStats" class="hidden">
-  <section class="card"><h1>Stats</h1><p>Wins, losses, win rate, and history.</p></section>
+  <section class="card hero"><h1>Stats</h1><p>Wins, losses, win rate, and court history.</p></section>
   <section class="card"><h2>Player Stats</h2><div id="statsList" class="list"></div></section>
   <section class="card"><h2>Court History</h2><div id="historyList" class="list"></div></section>
 </section>
